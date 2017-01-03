@@ -11,7 +11,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import static de.bischinger.buchungstool.business.importer.Assertions.assertThat;
-import static org.assertj.core.util.DateUtil.parse;
 import static org.junit.runners.Parameterized.Parameter;
 
 /**

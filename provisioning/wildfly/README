@@ -14,6 +14,7 @@ tar xzvf wildfly-10.1.0.Final.tar.gz
 rm wildfly-10.1.0.Final.tar.gz
 ln -s /opt/wildfly/wildfly-10.1.0.Final /opt/wildfly
 chmod +x /opt/wildfly/bin/*.sh
+ln -s wildfly/standalone/log/server.log wildfly.log
 
 mkdir -p /var/log/wildfly
 

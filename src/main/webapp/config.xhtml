@@ -1,0 +1,30 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/templates/main.xhtml">
+    <ui:define name="content">
+        <div class="container">
+            <h2>Konfiguration</h2>
+            <h:form>
+                Abrechnungsvariante:
+                <h:selectOneRadio value="#{configDetailBean.config.type}">
+                    <f:selectItem itemValue="SUMMER" itemLabel="Sommer"/>
+                    <f:selectItem itemValue="WINTER" itemLabel="Winter"/>
+                </h:selectOneRadio>
+                <h:commandButton styleClass="btn btn-primary" value="Speichern" type="submit"
+                                 action="#{configDetailBean.submit}"/>
+            </h:form>
+            <hr/>
+            <h2>Ignorierte Buchungskenner</h2>
+            <table class="table table-striped table-condensed">
+                <ui:repeat var="o" value="#{configDetailBean.config.skipValues}">
+                    <tr>
+                        <td>#{o}</td>
+                    </tr>
+                </ui:repeat>
+            </table>
+        </div>
+    </ui:define>
+</ui:composition>
+

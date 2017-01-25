@@ -13,17 +13,13 @@ import java.util.List;
  * Created by Alex Bischof on 25.01.2017.
  */
 @RequestScoped
-public class CapacityListBean
-{
-	private static final long serialVersionUID = 3338135449439313736L;
+public class CapacityListBean {
+    @Inject
+    private EntityManager em;
 
-	@Inject
-	private EntityManager em;
-
-	@Produces
-	@Named
-	public List<Capacity> getCapacities()
-	{
-		return em.createQuery("from Capacity order by id", Capacity.class).getResultList();
-	}
+    @Produces
+    @Named
+    public List<Capacity> getCapacities() {
+        return em.createQuery("from Capacity order by id", Capacity.class).getResultList();
+    }
 }

@@ -6,15 +6,32 @@
     <ui:define name="content">
         <div class="container">
             <h2>Warnungen</h2>
-            <div class="container">
-                <div class="row">
-                    <ui:repeat var="o" value="#{warnings}">
-                        <div class="col-xs-12 col-sm-4 col-lg-2">
-                            #{o.date}<br/>
-                        </div>
-                    </ui:repeat>
-                </div>
-            </div>
+            <table class="table table-striped table-condensed">
+                <tr>
+                    <th>Von</th>
+                    <th>Bis</th>
+                    <th>Typ</th>
+                    <th>Aktuelle/Kapazität</th>
+                    <th>Aktionen</th>
+                </tr>
+                <ui:repeat var="o" value="#{warnings}">
+
+                    <tr>
+                        <td>#{o.start}</td>
+                        <td>#{o.ende}</td>
+                        <td>#{o.typ}</td>
+                        <td>#{o.count}/#{o.capacity}</td>
+                        <td>
+                          <!--  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                    data-target="#modalEdit"><i class="fa fa-pencil-square-o"></i>
+                            </button>-->
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                    data-target="#modalEdit"><i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </ui:repeat>
+            </table>
             <hr/>
             <h2>Hiwis</h2>
             <div class="container">

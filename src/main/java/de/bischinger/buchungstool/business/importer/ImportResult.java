@@ -51,4 +51,13 @@ public class ImportResult {
     public void addError(Hiwi hiwi, LocalDateTime fromDate, LocalDateTime toDate, String message) {
         this.errors.add(String.format("%s %s %s: Fehler %s", hiwi, fromDate, toDate, message));
     }
+
+    @Override
+    public String toString() {
+        return "ImportResult{" +
+                "hiwis=" + hiwis.size() +
+                ", events=" + events.size() +
+                ", errors=" + errors.size() +
+                '}';
+    }
 }

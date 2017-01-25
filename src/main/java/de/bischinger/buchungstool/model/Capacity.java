@@ -14,8 +14,6 @@ import java.time.format.DateTimeFormatter;
 @Entity
 public class Capacity
 {
-	private static final long serialVersionUID = -2051051316139103849L;
-
 	private final static DateTimeFormatter df =  DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
 	@Id

@@ -1,6 +1,7 @@
 package de.bischinger.buchungstool.model;
 
-import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import java.time.LocalDate;
 
 import static de.bischinger.buchungstool.business.TimeNumberListFunction.getLocalTime;
@@ -8,9 +9,10 @@ import static de.bischinger.buchungstool.business.TimeNumberListFunction.getLoca
 /**
  * Created by bischofa on 28/06/16.
  */
-public class Warning implements Serializable {
-
+@Entity
+public class Warning extends RootPojo {
     private LocalDate date;
+    @Column(name = "_from")
     private int from;
     private int to;
     private Typ typ;
@@ -19,6 +21,9 @@ public class Warning implements Serializable {
 
     public enum Typ {
         Min, Max
+    }
+
+    public Warning() {
     }
 
     public Warning(LocalDate date, int from, int to, Typ typ, int capacity, int count) {
@@ -57,6 +62,14 @@ public class Warning implements Serializable {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 
     @Override

@@ -25,7 +25,7 @@ public class IcsImporterTest {
     public String dienstplan;
 
     @Parameter(1)
-    public int expectedUsers;
+    public int expectedHiwis;
 
     @Parameters
     public static Object[] data() {
@@ -48,6 +48,6 @@ public class IcsImporterTest {
     public void testImportFile() throws Exception {
         ImportResult importResult = icsImporter.importFile();
         assertThat(importResult).hasNoErrors()
-                .matches(ir -> ir.getUsers().size() == expectedUsers, "Expecting " + expectedUsers);
+                .matches(ir -> ir.getHiwis().size() == expectedHiwis, "Expecting " + expectedHiwis);
     }
 }

@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/templates/main.xhtml">
+    <ui:define name="content">
+        <div class="container">
+            <h2>Warnungen</h2>
+            <div class="container">
+                <div class="row">
+                    <ui:repeat var="o" value="#{warnings}">
+                        <div class="col-xs-12 col-sm-4 col-lg-2">
+                            #{o.date}<br/>
+                        </div>
+                    </ui:repeat>
+                </div>
+            </div>
+            <hr/>
+            <h2>Hiwis</h2>
+            <div class="container">
+                <div class="row">
+                    <ui:repeat var="o" value="#{hiwis}">
+                        <div class="col-xs-12 col-sm-4 col-lg-2">
+                            <h:link outcome="hiwi">
+                                <f:param name="name" value="#{o.name}"/>
+                                #{o.name}
+                            </h:link>
+                        </div>
+                    </ui:repeat>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+

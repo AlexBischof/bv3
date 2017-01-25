@@ -3,7 +3,7 @@ package de.bischinger.buchungstool.business.importer;
 import de.bischinger.buchungstool.business.IllegalTimeException;
 import de.bischinger.buchungstool.business.NettoDurationFunction;
 import de.bischinger.buchungstool.model.BookingTyp;
-import de.bischinger.buchungstool.model.User;
+import de.bischinger.buchungstool.model.Hiwi;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
@@ -48,14 +48,14 @@ public class IcsImporter {
         ImportResult importResult = new ImportResult();
 
         //Sammelt zunächst alle Recurrences zusammen, weil diese beliebig kommen können
-        Map<String, List<Tuple>> recurrenceIdMap = new HashMap<>();
+        Map<String, List<LocalDateTimePeriod>> recurrenceIdMap = new HashMap<>();
         importFunction.apply(file).stream().filter(hasProperty(RECURRENCE_ID)).forEach(o -> {
             try {
                 Component c = (Component) o;
-                Tuple newRecurrenceIdTuple = new Tuple(getStart(c), getEnd(c));
-                List<Tuple> localDateTimes = recurrenceIdMap.putIfAbsent(recurrenceIdKey(c), new ArrayList<>(singletonList(newRecurrenceIdTuple)));
+                LocalDateTimePeriod newRecurrenceIdLocalDateTimePeriod = new LocalDateTimePeriod(getStart(c), getEnd(c));
+                List<LocalDateTimePeriod> localDateTimes = recurrenceIdMap.putIfAbsent(recurrenceIdKey(c), new ArrayList<>(singletonList(newRecurrenceIdLocalDateTimePeriod)));
                 if (localDateTimes != null) {
-                    localDateTimes.add(newRecurrenceIdTuple);
+                    localDateTimes.add(newRecurrenceIdLocalDateTimePeriod);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -72,36 +72,36 @@ public class IcsImporter {
                                 .and(c -> skipList.stream()
                                         .noneMatch(name -> getName(c).trim().toLowerCase().matches(name)))));
 
-        NameToUserFunction nameToUserFunction = new NameToUserFunction();
+        NameToHiwiMapper nameToHiwiMapper = new NameToHiwiMapper();
         BookingTypMapping bookingTypMapping = new BookingTypMapping();
 
         Stream<Component> componentStream = prefilterComponents.apply(file);
 
-        Stream<User> userStream = componentStream.flatMap(component -> {
+        Stream<Hiwi> HiwiStream = componentStream.flatMap(component -> {
             String originalName = getName(component).trim();
 
-            //Extract 1 or 2 Users (e.g. pairing or ill)
-            List<User> users = nameToUserFunction.apply(originalName);
+            //Extract 1 or 2 Hiwis (e.g. pairing or ill)
+            List<Hiwi> hiwis = nameToHiwiMapper.apply(originalName);
 
-            //Sets time for each user (either from series or directly from component)
-            users.forEach(user -> {
+            //Sets time for each Hiwi (either from series or directly from component)
+            hiwis.forEach(hiwi -> {
                 Predicate<Component> isSeriesRule = hasProperty(RRULE);
 
-                BookingTyp[] bookingTyps = bookingTypMapping.apply(user.getOriginalName());
+                BookingTyp[] bookingTyps = bookingTypMapping.apply(hiwi.getOriginalName());
 
                 try {
                     if (isSeriesRule.test(component)) {
                         new RecurrenceDateHandler(component)
-                                .getEvents(recurrenceIdMap, bookingTypMapping, user)
+                                .getEvents(recurrenceIdMap, bookingTypMapping, hiwi)
                                 .forEach(importResult::addEvent);
                     } else {
                         LocalDateTime toDate = getEnd(component);
                         LocalDateTime fromDate = getStart(component);
                         try {
-                            user.addTimes(fromDate, toDate, bookingTyps);
+                            hiwi.addTimes(fromDate, toDate, bookingTyps);
                             importResult.addEvent(getStartAsDate(component), getEndAsDate(component), originalName);
                         } catch (IllegalTimeException e) {
-                            importResult.addError(user, fromDate, toDate, e.getMessage());
+                            importResult.addError(hiwi, fromDate, toDate, e.getMessage());
                         }
                     }
                 } catch (Exception e) {
@@ -109,26 +109,26 @@ public class IcsImporter {
                 }
             });
 
-            return users.stream();
+            return hiwis.stream();
         });
 
         NettoDurationFunction nettoDurationFunction = new NettoDurationFunction();
 
-        //Merge same users
-        Stream<User> mergedUser = userStream.collect(groupingBy(User::getName)).entrySet().stream()
-                .map(stringListEntry -> stringListEntry.getValue().stream().reduce((user, user2) -> {
-                            user.addUser(user2);
-                            return user;
+        //Merge same Hiwis
+        Stream<Hiwi> mergedHiwi = HiwiStream.collect(groupingBy(Hiwi::getName)).entrySet().stream()
+                .map(stringListEntry -> stringListEntry.getValue().stream().reduce((Hiwi, Hiwi2) -> {
+                            Hiwi.addHiwi(Hiwi2);
+                            return Hiwi;
                         })
                 )
                 .map(Optional::get)
-                .peek(user -> {//Self-Check
-                    if (user.getScheduleMap().isEmpty()) {
-                        throw new RuntimeException("Empty Schedule found for " + user);
+                .peek(Hiwi -> {//Self-Check
+                    if (Hiwi.getScheduleMap().isEmpty()) {
+                        throw new RuntimeException("Empty Schedule found for " + Hiwi);
                     }
-                }).peek(user -> user.calcDurations(nettoDurationFunction));
+                }).peek(Hiwi -> Hiwi.calcDurations(nettoDurationFunction));
 
-        importResult.addUsers(mergedUser.collect(toList()));
+        importResult.addHiwis(mergedHiwi.collect(toList()));
 
         return importResult;
     }
@@ -174,11 +174,11 @@ public class IcsImporter {
     }
 
     //FIXME scala case class
-    static class Tuple {
+    static class LocalDateTimePeriod {
         public final LocalDateTime startTime;
         public final LocalDateTime endTime;
 
-        Tuple(LocalDateTime startTime, LocalDateTime endTime) {
+        LocalDateTimePeriod(LocalDateTime startTime, LocalDateTime endTime) {
             this.startTime = startTime;
             this.endTime = endTime;
         }
@@ -193,7 +193,7 @@ public class IcsImporter {
 
         @Override
         public String toString() {
-            return "Tuple{" +
+            return "LocalDateTimePeriod{" +
                     "startTime=" + startTime +
                     ", endTime=" + endTime +
                     '}';

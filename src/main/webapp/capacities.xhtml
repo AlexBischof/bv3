@@ -1,0 +1,43 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/templates/main.xhtml">
+    <ui:define name="content">
+        <div class="container">
+            <h2>Kapazitäten</h2>
+            <div class="container">
+                <div class="row">
+                    <ui:repeat var="o" value="#{capacities}">
+                        <div class="col-xs-12 col-sm-4 col-lg-2">
+                            #{o.formattedDate} - #{o.number}
+                            <button type="button" class="btn btn-primary navbar-btn" data-toggle="modal"
+                                    data-target="#modalEdit">Bearbeiten
+                            </button>
+                        </div>
+                    </ui:repeat>
+                </div>
+            </div>
+
+            <!-- Modal Edit-->
+            <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">x</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Kapazität bearbeiten</h4>
+                        </div>
+                        <div class="modal-body">
+asasas
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+

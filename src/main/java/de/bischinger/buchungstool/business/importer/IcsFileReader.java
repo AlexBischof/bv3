@@ -11,13 +11,13 @@ import java.io.IOException;
 /**
  * Created by Alexander Bischof on 31.07.15.
  */
-class IcsFileReader {
-    Calendar read(File file) throws IcsFileReadException {
-        try (FileInputStream fin = new FileInputStream(file)) {
-            CalendarBuilder builder = new CalendarBuilder();
-            return builder.build(fin);
-        } catch (IOException | ParserException e) {
-            throw new IcsFileReadException(e);
-        }
+public class IcsFileReader {
+  public Calendar read(File file) throws IcsFileReadException {
+    try (FileInputStream fin = new FileInputStream(file)) {
+      CalendarBuilder builder = new CalendarBuilder();
+      return builder.build(fin);
+    } catch (IOException | ParserException e) {
+      throw new IcsFileReadException(e);
     }
+  }
 }

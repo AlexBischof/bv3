@@ -2,6 +2,8 @@ package de.bischinger.buchungstool.model;
 
 import de.bischinger.buchungstool.business.NettoDurationFunction;
 
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,15 +14,20 @@ import java.util.Map;
 /**
  * Created by bischofa on 28/06/16.
  */
-public class User implements Serializable {
+@Entity
+public class Hiwi extends RootPojo {
+    private static final long serialVersionUID = -7130519343755801047L;
+
     private String name;
     private String originalName;
+
+    @Transient
     private Map<LocalDate, Schedule> scheduleMap;
 
-    public User() {
+    public Hiwi() {
     }
 
-    public User(String name, String originalName) {
+    public Hiwi(String name, String originalName) {
         this.name = name;
         this.originalName = originalName;
     }
@@ -33,7 +40,7 @@ public class User implements Serializable {
         return originalName;
     }
 
-    public void addUser(User other) {
+    public void addHiwi(Hiwi other) {
         other.getScheduleMap().forEach((otherLocalDate, otherSchedule) -> {
 
             Schedule curSchedule = getScheduleMap().get(otherLocalDate);
@@ -54,7 +61,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Hiwi{" +
                 "name='" + name + '\'' +
                 ", originalName='" + originalName + '\'' +
                 ", scheduleMap=" + scheduleMap +

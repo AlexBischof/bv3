@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * Created by bischofa on 28/06/16.
  */
-class NameNormalization implements UnaryOperator<String> {
+public class NameNormalization implements UnaryOperator<String> {
 
     private static Pattern withinBrackets = Pattern.compile("\\(([^)]+)\\)");
 

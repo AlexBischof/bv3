@@ -40,7 +40,7 @@ public class TimeNumberListFunction implements Function<LocalTime, Integer> {
         try {
             return timeNumberMap.get(time);
         } catch (NullPointerException e) {
-            throw new IllegalTimeException("Nicht definierte Zeit: " + time);
+            throw new NullPointerException("Nicht definierte Zeit: " + time);
         }
     }
 

@@ -1,6 +1,6 @@
 package de.bischinger.buchungstool.business.importer;
 
-import de.bischinger.buchungstool.model.User;
+import de.bischinger.buchungstool.model.Hiwi;
 import net.fortuna.ical4j.model.*;
 import net.fortuna.ical4j.model.property.ExDate;
 import net.fortuna.ical4j.model.property.RRule;
@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static de.bischinger.buchungstool.business.DateConverter.convertTo;
 import static de.bischinger.buchungstool.business.importer.IcsImporter.*;
 import static java.time.temporal.ChronoField.HOUR_OF_DAY;
 import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
@@ -46,7 +47,7 @@ class RecurrenceDateHandler {
         }
     }
 
-    public Stream<Event> getEvents(Map<String, List<IcsImporter.Tuple>> recurrenceIdMap, BookingTypMapping bookingTypMapping, User user) {
+    public Stream<Event> getEvents(Map<String, List<IcsImporter.LocalDateTimePeriod>> recurrenceIdMap, BookingTypMapping bookingTypMapping, Hiwi hiwi) {
         Date rStart = getStartAsDate(component);
         Date rEnd = getEndAsDate(component);
         Date periodEnd = rEnd;
@@ -72,10 +73,10 @@ class RecurrenceDateHandler {
             LocalDateTime tmpEnd = getEnd(component);
             LocalDateTime originalEnd = fromDate.minusHours(0).with(HOUR_OF_DAY, tmpEnd.getHour()).with(MINUTE_OF_HOUR, tmpEnd.getMinute());
             LocalDateTime calculatedEnd = originalEnd;
-            List<IcsImporter.Tuple> tuples = recurrenceIdMap.get(recurrenceIdKey(component));
+            List<IcsImporter.LocalDateTimePeriod> tuples = recurrenceIdMap.get(recurrenceIdKey(component));
 
             if (tuples != null) {
-                Optional<LocalDateTime> first = tuples.stream().map(Tuple::getEndTime)
+                Optional<LocalDateTime> first = tuples.stream().map(LocalDateTimePeriod::getEndTime)
                         .filter(localDateTime -> localDateTime.toLocalDate().equals(originalEnd.toLocalDate()))
                         .findFirst();
                 if (first.isPresent()) {
@@ -83,7 +84,7 @@ class RecurrenceDateHandler {
                 }
             }
 
-            user.addTimes(fromDate, calculatedEnd, bookingTypMapping.apply(user.getName()));
+            hiwi.addTimes(fromDate, calculatedEnd, bookingTypMapping.apply(hiwi.getName()));
             java.util.Date end = Date.from(calculatedEnd.atZone(ZoneId.of("Europe/Berlin")).toInstant());
 
             //Wenn in exdate definiert, anpassung startdate
@@ -91,7 +92,7 @@ class RecurrenceDateHandler {
                     .filter(exdate -> Dates.getInstance((java.util.Date) exdate, DATE_TIME).equals(date))
                     .findFirst().orElse(date)).orElse(date);
 
-            return new Event((java.util.Date) startDate, end, user.getName());
+            return new Event((java.util.Date) startDate, end, hiwi.getName());
         });
     }
 }

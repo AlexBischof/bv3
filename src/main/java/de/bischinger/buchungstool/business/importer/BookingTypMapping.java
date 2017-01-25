@@ -9,7 +9,7 @@ import java.util.function.Function;
 /**
  * Created by bischofa on 28/06/16.
  */
-class BookingTypMapping implements Function<String, BookingTyp[]> {
+public class BookingTypMapping implements Function<String, BookingTyp[]> {
     @Override
     public BookingTyp[] apply(String originalName) {
 

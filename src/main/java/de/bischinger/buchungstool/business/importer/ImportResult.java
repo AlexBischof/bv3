@@ -1,6 +1,6 @@
 package de.bischinger.buchungstool.business.importer;
 
-import de.bischinger.buchungstool.model.User;
+import de.bischinger.buchungstool.model.Hiwi;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -13,16 +13,16 @@ import static java.util.stream.Collectors.toList;
  * Created by bischofa on 03/01/17.
  */
 public class ImportResult {
-    private List<User> users = new ArrayList<>();
+    private List<Hiwi> hiwis = new ArrayList<>();
     private Set<Event> events = new HashSet<>();
     private List<String> errors = new ArrayList<>();
 
-    public void addUsers(List<User> users) {
-        this.users = users;
+    public void addHiwis(List<Hiwi> hiwis) {
+        this.hiwis = hiwis;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public List<Hiwi> getHiwis() {
+        return hiwis;
     }
 
     public Collection<Event> getEvents(Predicate<Event> predicate) {
@@ -48,7 +48,7 @@ public class ImportResult {
         addEvent(new Event(start, end, originalName));
     }
 
-    public void addError(User user, LocalDateTime fromDate, LocalDateTime toDate, String message) {
-        this.errors.add(String.format("%s %s %s: Fehler %s", user, fromDate, toDate, message));
+    public void addError(Hiwi hiwi, LocalDateTime fromDate, LocalDateTime toDate, String message) {
+        this.errors.add(String.format("%s %s %s: Fehler %s", hiwi, fromDate, toDate, message));
     }
 }

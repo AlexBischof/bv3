@@ -12,7 +12,8 @@ import static java.util.Arrays.binarySearch;
 /**
  * Created by bischofa on 28/06/16.
  */
-public class Booking {
+public class Booking
+{
     private int from;
     private int to;
     private BookingTyp[] bookingTyp;

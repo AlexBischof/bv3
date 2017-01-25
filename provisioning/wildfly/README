@@ -1,0 +1,46 @@
+scp wildfly bischofa@hosteurope:/home/bischofa/
+chmod +x /etc/init.d/wildfly
+
+# install java8
+#cd /lesv4
+#wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u101-b13/jdk-8u101-linux-i586.tar.gz"
+#tar xzf jdk-8u101-linux-i586.tar.gz
+#rm jdk-8u101-linux-i586.tar.gz
+
+# install wildfly
+cd /opt/wildfly
+wget http://download.jboss.org/wildfly/10.1.0.Final/wildfly-10.1.0.Final.tar.gz
+tar xzvf wildfly-10.1.0.Final.tar.gz
+rm wildfly-10.1.0.Final.tar.gz
+ln -s /opt/wildfly/wildfly-10.1.0.Final /opt/wildfly
+chmod +x /opt/wildfly/bin/*.sh
+
+mkdir -p /var/log/wildfly
+
+groupadd -r wildfly
+useradd -r -g wildfly -d /opt/wildfly -s /sbin/nologin wildfly
+
+chown -R wildfly:wildfly /opt/wildfly
+chown -R wildfly:wildfly /var/log/wildfly
+chown -R wildfly:wildfly /opt/wildfly-10.1.0.Final/
+
+update-rc.d wildfly defaults
+chkconfig wildfly on
+update-rc.d wildfly defaults
+
+#config wildfly
+export JAVA_HOME=/opt/java
+cd /opt/wildfly/bin
+./add-user.sh admin sosgo! --silent
+
+ln -s /opt/wildfly/standalone/log/server.log wildfly.log
+ln -s /opt/wildfly/standalone/configuration/standalone.xml wildfly_standalone.xml
+
+
+#cleanup wildfly
+cd /opt/wildfly
+rm -rf appclient
+rm -rf docs
+rm -rf welcome-content
+
+service wildfly start

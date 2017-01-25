@@ -1,0 +1,4 @@
+/opt/wildfly/bin/jboss-cli.sh --connect --controller=localhost:10090 --command="deploy --
+force /home/bischofa/buchungstool.war"
+
+scp -P 28987 target/buchungstool.war bischofa@hosteurope:/home/bischofa/

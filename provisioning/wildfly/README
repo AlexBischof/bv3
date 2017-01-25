@@ -32,11 +32,9 @@ update-rc.d wildfly defaults
 #config wildfly
 export JAVA_HOME=/opt/java
 cd /opt/wildfly/bin
-./add-user.sh admin sosgo! --silent
+./add-user.sh admin test --silent
 
-ln -s /opt/wildfly/standalone/log/server.log wildfly.log
-ln -s /opt/wildfly/standalone/configuration/standalone.xml wildfly_standalone.xml
-
+ln -s /opt/wildfly/standalone/log/server.log /opt/wildfly/wildfly.log
 
 #cleanup wildfly
 cd /opt/wildfly

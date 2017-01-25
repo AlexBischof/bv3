@@ -6,7 +6,7 @@
 
     <groupId>de.bischinger.buchungstoolv3</groupId>
     <artifactId>buchungstoolv3</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${maven.build.timestamp}</version>
     <packaging>war</packaging>
 
     <properties>

@@ -1,6 +1,7 @@
 package de.bischinger.buchungstool.model;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.text.SimpleDateFormat;
@@ -11,13 +12,13 @@ import java.time.format.DateTimeFormatter;
  * Created by Alex Bischof on 25.01.2017.
  */
 @Entity
-public class Capacity extends RootPojo
+public class Capacity
 {
 	private static final long serialVersionUID = -2051051316139103849L;
 
-	private final static DateTimeFormatter df =  DateTimeFormatter.ofPattern("yyyy MM dd");
+	private final static DateTimeFormatter df =  DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-	@NotNull
+	@Id
 	private LocalDate date;
 	@NotNull
 	private int number;

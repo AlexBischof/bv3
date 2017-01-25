@@ -24,6 +24,6 @@ public class CapacityListBean
 	@Named
 	public List<Capacity> getCapacities()
 	{
-		return em.createQuery("from Capacity", Capacity.class).getResultList();
+		return em.createQuery("from Capacity order by id", Capacity.class).getResultList();
 	}
 }

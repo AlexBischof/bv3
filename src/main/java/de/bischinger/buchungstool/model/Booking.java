@@ -3,62 +3,83 @@ package de.bischinger.buchungstool.model;
 import de.bischinger.buchungstool.business.NettoDurationFunction;
 import de.bischinger.buchungstool.business.TimeNumberListFunction;
 
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
 import java.time.LocalTime;
-import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import static de.bischinger.buchungstool.model.BookingTyp.Ill;
-import static java.util.Arrays.binarySearch;
+import static java.util.Arrays.asList;
 
 /**
  * Created by bischofa on 28/06/16.
  */
-public class Booking
+@Entity
+public class Booking extends RootPojo
 {
-    private int from;
-    private int to;
-    private BookingTyp[] bookingTyp;
-    private int bruttoDuration;
-    private int nettoDuration;
+	private static final long serialVersionUID = 655879618662075580L;
 
-    public Booking(LocalTime from, LocalTime to, BookingTyp[] typ) {
-        this.from = TimeNumberListFunction.getNumber(from);
-        this.to = TimeNumberListFunction.getNumber(to);
-        this.bookingTyp = typ;
-    }
+	@Column(name = "_from")
+	private int from;
+	private int to;
+	@ElementCollection
+	private Set<BookingTyp> bookingTyp = new HashSet<>();
+	private int bruttoDuration;
+	private int nettoDuration;
 
-    public void calcDuration(NettoDurationFunction durationFunction) {
-        this.bruttoDuration = (int) ((to - from) / 4d * 60);
-        this.nettoDuration = durationFunction.apply(bruttoDuration);
-    }
+	public Booking()
+	{
+	}
 
-    public int getBruttoDuration() {
-        return bruttoDuration;
-    }
+	public Booking(LocalTime from, LocalTime to, BookingTyp[] typ)
+	{
+		this.from = TimeNumberListFunction.getNumber(from);
+		this.to = TimeNumberListFunction.getNumber(to);
+		bookingTyp.addAll(asList(typ));
+	}
 
-    public int getNettoDuration() {
-        return nettoDuration;
-    }
+	public void calcDuration(NettoDurationFunction durationFunction)
+	{
+		this.bruttoDuration = (int) ((to - from) / 4d * 60);
+		this.nettoDuration = durationFunction.apply(bruttoDuration);
+	}
 
-    public int getFrom() {
-        return from;
-    }
+	public int getBruttoDuration()
+	{
+		return bruttoDuration;
+	}
 
-    public int getTo() {
-        return to;
-    }
+	public int getNettoDuration()
+	{
+		return nettoDuration;
+	}
 
-    public boolean isNotIll() {
-        return bookingTyp == null || binarySearch(bookingTyp, Ill) < 0;
-    }
+	public int getFrom()
+	{
+		return from;
+	}
 
-    @Override
-    public String toString() {
-        return "Booking{" +
-                "from=" + from +
-                ", to=" + to +
-                ", bookingTyp=" + Arrays.toString(bookingTyp) +
-                ", bruttoDuration=" + bruttoDuration +
-                ", nettoDuration=" + nettoDuration +
-                '}';
-    }
+	public int getTo()
+	{
+		return to;
+	}
+
+	public boolean isNotIll()
+	{
+		return bookingTyp == null || !bookingTyp.contains(Ill);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Booking{" +
+				"from=" + from +
+				", to=" + to +
+				", bookingTyp=" + bookingTyp +
+				", bruttoDuration=" + bruttoDuration +
+				", nettoDuration=" + nettoDuration +
+				'}';
+	}
 }

@@ -4,102 +4,142 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.time.LocalDate;
 
-import static de.bischinger.buchungstool.business.TimeNumberListFunction.getLocalTime;
-
 /**
  * Created by bischofa on 28/06/16.
  */
 @Entity
-public class Warning extends RootPojo {
-    private LocalDate date;
-    @Column(name = "_from")
-    private int from;
-    private int to;
-    private Typ typ;
-    private int capacity;
-    private int count;
+public class Warning extends RootPojo
+{
+	private static final long serialVersionUID = -5587388863099323920L;
 
-    public enum Typ {
-        Min, Max
-    }
+	private LocalDate date;
+	@Column(name = "_from")
+	private int from;
+	private int to;
+	private Typ typ;
+	private int capacity;
+	private int count;
+	private int diff;
 
-    public Warning() {
-    }
+	public enum Typ
+	{
+		Min, Max
+	}
 
-    //TODO Idee dto loswerden
-    public Warning(LocalDate date, int from, int to, Typ typ, int capacity, int count) {
-        this.date = date;
-        this.from = from;
-        this.to = to;
-        this.typ = typ;
-        this.capacity = capacity;
-        this.count = count;
-    }
+	public Warning()
+	{
+	}
 
-    public LocalDate getDate() {
-        return date;
-    }
+	//TODO Idee dto loswerden
+	public Warning(LocalDate date, int from, int to, Typ typ, int capacity, int count, int diff)
+	{
+		this.date = date;
+		this.from = from;
+		this.to = to;
+		this.typ = typ;
+		this.capacity = capacity;
+		this.count = count;
+		this.diff = diff;
+	}
 
-    public int getFrom() {
-        return from;
-    }
+	public LocalDate getDate()
+	{
+		return date;
+	}
 
-    public int getTo() {
-        return to;
-    }
+	public int getFrom()
+	{
+		return from;
+	}
 
-    public void setTo(int to) {
-        this.to = to;
-    }
+	public int getTo()
+	{
+		return to;
+	}
 
-    public Typ getTyp() {
-        return typ;
-    }
+	public void setTo(int to)
+	{
+		this.to = to;
+	}
 
-    public int getCount() {
-        return count;
-    }
+	public Typ getTyp()
+	{
+		return typ;
+	}
 
-    public void setCount(int count) {
-        this.count = count;
-    }
+	public int getCount()
+	{
+		return count;
+	}
 
-    public int getCapacity() {
-        return capacity;
-    }
+	public void setCount(int count)
+	{
+		this.count = count;
+	}
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
+	public int getDiff()
+	{
+		return diff;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+	public void setDiff(int diff)
+	{
+		this.diff = diff;
+	}
 
-        Warning warning = (Warning) o;
+	public int getCapacity()
+	{
+		return capacity;
+	}
 
-        if (from != warning.from) return false;
-        if (to != warning.to) return false;
-        if (count != warning.count) return false;
-        if (!date.equals(warning.date)) return false;
-        return typ == warning.typ;
+	public void setCapacity(int capacity)
+	{
+		this.capacity = capacity;
+	}
 
-    }
+	@Override
+	public boolean equals(Object o)
+	{
+		if(this == o)
+			return true;
+		if(o == null || getClass() != o.getClass())
+			return false;
 
-    @Override
-    public int hashCode() {
-        int result = date.hashCode();
-        result = 31 * result + from;
-        result = 31 * result + to;
-        result = 31 * result + typ.hashCode();
-        result = 31 * result + count;
-        return result;
-    }
+		Warning warning = (Warning) o;
 
-    @Override
-    public String toString() {
-        return date + ": " + (typ.equals(Typ.Max) ? "Überbuchung" : "Unterbelegt") + " (" + capacity + ") "
-                + getLocalTime(from) + " - " + getLocalTime(to + 1);
-    }
+		if(from != warning.from)
+			return false;
+		if(to != warning.to)
+			return false;
+		if(diff != warning.diff)
+			return false;
+		if(!date.equals(warning.date))
+			return false;
+		return typ == warning.typ;
+
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int result = date.hashCode();
+		result = 31 * result + from;
+		result = 31 * result + to;
+		result = 31 * result + typ.hashCode();
+		result = 31 * result + diff;
+		return result;
+	}
+
+	@Override public String toString()
+	{
+		return "Warning{" +
+				"date=" + date +
+				", from=" + from +
+				", to=" + to +
+				", typ=" + typ +
+				", capacity=" + capacity +
+				", count=" + count +
+				", diff=" + diff +
+				'}';
+	}
 }

@@ -68,16 +68,16 @@ public class ValidationService {
 
                     Warning warning = null;
                     if (lastWarning == null) {
-                        lastWarning = warning = new Warning(localDate, slot, slot, typ, capacity, count);
+                        lastWarning = warning = new Warning(localDate, slot, slot, typ, capacity, count, diff);
                         warnings.add(warning);
                     } else {
 
                         //Check typ and dist to to
-                        boolean updateLastWarning = lastWarning.getTyp().equals(typ) && slot - lastWarning.getTo() == 1 && lastWarning.getCount() == diff;
+                        boolean updateLastWarning = lastWarning.getTyp().equals(typ) && slot - lastWarning.getTo() == 1 && lastWarning.getDiff() == diff;
                         if (updateLastWarning) {
                             lastWarning.setTo(slot);
                         } else {
-                            lastWarning = warning = new Warning(localDate, slot, slot, typ, capacity, count);
+                            lastWarning = warning = new Warning(localDate, slot, slot, typ, capacity, count, diff);
                             warnings.add(warning);
                         }
                     }

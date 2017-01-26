@@ -33,101 +33,121 @@ import static org.apache.commons.io.IOUtils.toByteArray;
  */
 @Path("/upload")
 @Stateless
-public class UploadResource {
-    @Inject
-    private Logger logger;
-    @Inject
-    private ImportBean importBean;
-    @Inject
-    private EntityManager em;
+public class UploadResource
+{
+	@Inject
+	private Logger logger;
+	@Inject
+	private ImportBean importBean;
+	@Inject
+	private EntityManager em;
 
-    @POST
-    @Path("cal")
-    @Consumes("multipart/form-data")
-    public Response uploadCal(MultipartFormDataInput input) {
-        Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-        List<InputPart> inputParts = uploadForm.get("file");
+	@POST
+	@Path("cal")
+	@Consumes("multipart/form-data")
+	public Response uploadCal(MultipartFormDataInput input)
+	{
+		Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
+		List<InputPart> inputParts = uploadForm.get("file");
 
-        for (InputPart inputPart : inputParts) {
-            try {
-                InputStream inputStream = inputPart.getBody(InputStream.class, null);
-                String fileName = getFileName(inputPart.getHeaders());
-                logger.info(fileName);
-                File file = createTempFile("buchungstool", ".ics");
-                writeFile(toByteArray(inputStream), file);
-                file.deleteOnExit();
+		for (InputPart inputPart : inputParts)
+		{
+			try
+			{
+				InputStream inputStream = inputPart.getBody(InputStream.class, null);
+				String fileName = getFileName(inputPart.getHeaders());
+				logger.info(fileName);
+				File file = createTempFile("buchungstool", ".ics");
+				writeFile(toByteArray(inputStream), file);
+				file.deleteOnExit();
 
-                importBean.doImport(file);
-            } catch (IOException | IcsFileReadException e) {
-                return Response.status(INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-            }
-        }
+				importBean.doImport(file);
+			}
+			catch(IOException | IcsFileReadException e)
+			{
+				return Response.status(INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+			}
+		}
 
-        return ok().build();
-    }
+		return ok().build();
+	}
 
-    @POST
-    @Path("capacity")
-    @Consumes("multipart/form-data")
-    public Response uploadCapaciy(MultipartFormDataInput input) {
-        Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-        List<InputPart> inputParts = uploadForm.get("file");
+	@POST
+	@Path("capacity")
+	@Consumes("multipart/form-data")
+	public Response uploadCapaciy(MultipartFormDataInput input)
+	{
+		Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
+		List<InputPart> inputParts = uploadForm.get("file");
 
-        for (InputPart inputPart : inputParts) {
-            try {
-                InputStream inputStream = inputPart.getBody(InputStream.class, null);
-                String fileName = getFileName(inputPart.getHeaders());
-                logger.info(fileName);
-                File file = createTempFile("capacityFile", ".ics");
-                writeFile(toByteArray(inputStream), file);
-                file.deleteOnExit();
+		for (InputPart inputPart : inputParts)
+		{
+			try
+			{
+				InputStream inputStream = inputPart.getBody(InputStream.class, null);
+				String fileName = getFileName(inputPart.getHeaders());
+				logger.info(fileName);
+				File file = createTempFile("capacityFile", ".ics");
+				writeFile(toByteArray(inputStream), file);
+				file.deleteOnExit();
 
-                CapacityReader capacityReader = new CapacityReader();
-                capacityReader.read(file.toPath())
-                        .forEach((k, v) -> {
-                                    //Update if already exists
-                                    Capacity dbCapacity = em.find(Capacity.class, k);
-                                    if (dbCapacity == null) {
-                                        em.persist(new Capacity(k, v));
-                                    } else {
-                                        dbCapacity.setNumber(v);
-                                    }
-                                }
-                        );
-            } catch (IOException | IcsFileReadException e) {
-                return Response.status(INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-            }
-        }
+				CapacityReader capacityReader = new CapacityReader();
+				capacityReader.read(file.toPath())
+						.forEach(capacity ->
+								{
+									//Update if already exists
+									Capacity dbCapacity = em.find(Capacity.class, capacity.getDate());
+									if(dbCapacity == null)
+									{
+										em.persist(capacity);
+									}
+									else
+									{
+										dbCapacity.setNumber(capacity.getNumber());
+									}
+								}
+						);
+			}
+			catch(IOException | IcsFileReadException e)
+			{
+				return Response.status(INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+			}
+		}
 
-        return ok().build();
-    }
+		return ok().build();
+	}
 
-    private void writeFile(byte[] content, File file) throws IOException {
-        //String filename = file.getName();
+	private void writeFile(byte[] content, File file) throws IOException
+	{
+		//String filename = file.getName();
 
-        FileOutputStream fop = new FileOutputStream(file);
-        fop.write(content);
-        fop.flush();
-        fop.close();
-    }
+		FileOutputStream fop = new FileOutputStream(file);
+		fop.write(content);
+		fop.flush();
+		fop.close();
+	}
 
-    private String getFileName(MultivaluedMap<String, String> headers) {
-        String[] contentDisposition = headers.getFirst("Content-Disposition").split(";");
+	private String getFileName(MultivaluedMap<String, String> headers)
+	{
+		String[] contentDisposition = headers.getFirst("Content-Disposition").split(";");
 
-        for (String filename : contentDisposition) {
-            if ((filename.trim().startsWith("filename"))) {
-                return sanitizeFilename(filename.split("=")[1]);
-            }
-        }
-        throw new IcsFileReadException("file not found");
-    }
+		for (String filename : contentDisposition)
+		{
+			if((filename.trim().startsWith("filename")))
+			{
+				return sanitizeFilename(filename.split("=")[1]);
+			}
+		}
+		throw new IcsFileReadException("file not found");
+	}
 
-    private String sanitizeFilename(String s) {
-        return s.trim().replaceAll("\"", "");
-    }
+	private String sanitizeFilename(String s)
+	{
+		return s.trim().replaceAll("\"", "");
+	}
 
 	/*public Response uploadFile(MultipartFormDataInput input) throws URISyntaxException {
-        LOGGER.info(">>>> sit back - starting file upload...");
+				LOGGER.info(">>>> sit back - starting file upload...");
 
 		Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
 		List<InputPart> inputParts = uploadForm.get("file");

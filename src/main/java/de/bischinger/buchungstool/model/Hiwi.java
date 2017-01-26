@@ -25,7 +25,7 @@ public class Hiwi extends RootPojo
 	private String name;
 	private String originalName;
 
-	@OneToMany(cascade = { PERSIST, REMOVE }, fetch = EAGER)
+	@OneToMany(cascade = { PERSIST, REMOVE }, fetch = EAGER, orphanRemoval = true)
 	private Map<LocalDate, Schedule> scheduleMap;
 
 	public Hiwi()

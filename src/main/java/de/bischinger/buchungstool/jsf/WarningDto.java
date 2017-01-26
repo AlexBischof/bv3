@@ -1,5 +1,6 @@
 package de.bischinger.buchungstool.jsf;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static de.bischinger.buchungstool.business.TimeNumberListFunction.getLocalTime;
@@ -7,18 +8,30 @@ import static de.bischinger.buchungstool.model.Warning.Typ;
 import static de.bischinger.buchungstool.model.Warning.Typ.Max;
 
 public class WarningDto {
+    private String date;
     private LocalTime start;
     private LocalTime ende;
     private String typ;
     private int capacity;
     private int count;
 
-    public WarningDto(int from, int to, Typ typ, int capacity, int count) {
+    public WarningDto(String date, int from, int to, Typ typ, int capacity, int count) {
+        this.date = date;
         this.start = getLocalTime(from);
         this.ende = getLocalTime(to);
         this.typ = typ.equals(Max) ? "Überbelegung" : "Unterbelegung";
         this.capacity = capacity;
         this.count = count;
+    }
+
+    public String getDate()
+    {
+        return date;
+    }
+
+    public void setDate(String date)
+    {
+        this.date = date;
     }
 
     public LocalTime getStart() {

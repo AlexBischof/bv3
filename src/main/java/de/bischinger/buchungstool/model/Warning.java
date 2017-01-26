@@ -26,6 +26,7 @@ public class Warning extends RootPojo {
     public Warning() {
     }
 
+    //TODO Idee dto loswerden
     public Warning(LocalDate date, int from, int to, Typ typ, int capacity, int count) {
         this.date = date;
         this.from = from;
@@ -33,7 +34,6 @@ public class Warning extends RootPojo {
         this.typ = typ;
         this.capacity = capacity;
         this.count = count;
-
     }
 
     public LocalDate getDate() {

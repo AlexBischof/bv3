@@ -61,13 +61,13 @@ public class ValidationService {
                 Integer count = e.getValue();
 
                 if (count < minBooking || count > capacity) {
-
                     Warning.Typ typ = count < minBooking ? Min : Max;
+                    System.out.println(localDate + " " + count + " " + capacity + " " + typ);
                     int diff = typ.equals(Min) ? minBooking - count : count - capacity;
 
                     Warning warning = null;
                     if (lastWarning == null) {
-                        lastWarning = warning = new Warning(localDate, slot, slot, typ, capacity, diff);
+                        lastWarning = warning = new Warning(localDate, slot, slot, typ, capacity, count);
                         warnings.add(warning);
                     } else {
 
@@ -76,7 +76,7 @@ public class ValidationService {
                         if (updateLastWarning) {
                             lastWarning.setTo(slot);
                         } else {
-                            lastWarning = warning = new Warning(localDate, slot, slot, typ, capacity, diff);
+                            lastWarning = warning = new Warning(localDate, slot, slot, typ, capacity, count);
                             warnings.add(warning);
                         }
                     }

@@ -15,10 +15,9 @@
                     <th>Aktionen</th>
                 </tr>
                 <ui:repeat var="o" value="#{warnings}">
-
                     <tr>
-                        <td>#{o.start}</td>
-                        <td>#{o.ende}</td>
+                        <td>#{o.date}</td>
+                        <td>#{o.start} - #{o.ende}</td>
                         <td>#{o.typ}</td>
                         <td>#{o.count}/#{o.capacity}</td>
                         <td>

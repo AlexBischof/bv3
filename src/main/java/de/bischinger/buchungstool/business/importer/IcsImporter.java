@@ -17,10 +17,12 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import static java.time.LocalDateTime.ofInstant;
 import static java.util.Collections.singletonList;
+import static java.util.logging.Logger.*;
 import static java.util.logging.Logger.getAnonymousLogger;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -105,7 +107,8 @@ public class IcsImporter {
                         }
                     }
                 } catch (Exception e) {
-                    getAnonymousLogger().warning(e.getMessage());
+                    e.printStackTrace();
+                    getLogger(IcsImporter.class.getSimpleName()).warning(e.getMessage());
                 }
             });
 
@@ -116,9 +119,9 @@ public class IcsImporter {
 
         //Merge same Hiwis
         Stream<Hiwi> mergedHiwi = HiwiStream.collect(groupingBy(Hiwi::getName)).entrySet().stream()
-                .map(stringListEntry -> stringListEntry.getValue().stream().reduce((Hiwi, Hiwi2) -> {
-                            Hiwi.addHiwi(Hiwi2);
-                            return Hiwi;
+                .map(stringListEntry -> stringListEntry.getValue().stream().reduce((hiwi, hiwi2) -> {
+                            hiwi.addHiwi(hiwi2);
+                            return hiwi;
                         })
                 )
                 .map(Optional::get)

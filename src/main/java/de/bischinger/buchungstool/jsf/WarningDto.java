@@ -1,6 +1,5 @@
 package de.bischinger.buchungstool.jsf;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static de.bischinger.buchungstool.business.TimeNumberListFunction.getLocalTime;

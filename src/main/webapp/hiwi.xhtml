@@ -1,12 +1,44 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core"
                 template="/templates/main.xhtml">
     <ui:define name="content">
-        <div class="container">
-            <h2>Hiwi</h2>
-            #{hiwiDetailBean.name}
+        <h2>Hiwi: #{hiwiDetailBean.name}</h2>
+        <a href="#bookings" class="btn">
+            <button type="button" class="btn btn-info">Buchungen</button>
+        </a>
+        <a href="#auswertung" class="btn">
+            <button type="button" class="btn btn-info">Auswertung</button>
+        </a>
+
+        <div class="container" id="bookings">
+            <h2>Einzelbuchungen</h2>
+            <table class="table table-striped table-condensed">
+                <tr>
+                    <th>Datum</th>
+                    <th>Zeitraum</th>
+                    <th>Netto in Min</th>
+                    <th>Brutto in Min</th>
+                    <th>Aktionen</th>
+                </tr>
+                <ui:repeat var="o" value="#{hiwiDetailBean.bookings}">
+                    <tr>
+                        <td>#{o.date}</td>
+                        <td>#{o.start} - #{o.ende}</td>
+                        <td>#{o.nettoDuration}</td>
+                        <td>#{o.bruttoDuration}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                    data-target="#modalEdit"><i class="fa fa-pencil-square-o"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </ui:repeat>
+            </table>
+        </div>
+        <hr/>
+        <div class="container" id="auswertung">
+            <h2>Auswertungen</h2>
+            Was packen wir hier hin?
         </div>
     </ui:define>
 </ui:composition>

@@ -3,6 +3,7 @@ package de.bischinger.buchungstool.model;
 import de.bischinger.buchungstool.business.NettoDurationFunction;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.CascadeType.REMOVE;
+import static javax.persistence.FetchType.EAGER;
 
 /**
  * Created by bischofa on 28/06/16.
@@ -24,7 +26,7 @@ public class Hiwi extends RootPojo
 	private String name;
 	private String originalName;
 
-	@OneToMany(cascade = { PERSIST, REMOVE })
+	@OneToMany(cascade = { PERSIST, REMOVE }, fetch = EAGER)
 	private Map<LocalDate, Schedule> scheduleMap;
 
 	public Hiwi()

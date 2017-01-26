@@ -3,7 +3,6 @@ package de.bischinger.buchungstool.model;
 import de.bischinger.buchungstool.business.NettoDurationFunction;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

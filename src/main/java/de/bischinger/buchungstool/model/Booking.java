@@ -2,7 +2,6 @@ package de.bischinger.buchungstool.model;
 
 import de.bischinger.buchungstool.business.NettoDurationFunction;
 import de.bischinger.buchungstool.business.TimeNumberListFunction;
-import org.apache.commons.lang.ArrayUtils;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -14,7 +13,7 @@ import java.util.Set;
 import static de.bischinger.buchungstool.model.BookingTyp.Ill;
 import static java.util.Arrays.asList;
 import static javax.persistence.FetchType.EAGER;
-import static org.apache.commons.lang.ArrayUtils.*;
+import static org.apache.commons.lang.ArrayUtils.isNotEmpty;
 
 /**
  * Created by bischofa on 28/06/16.

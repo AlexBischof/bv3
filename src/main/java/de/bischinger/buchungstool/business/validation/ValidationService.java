@@ -12,6 +12,8 @@ import java.util.stream.Stream;
 import static de.bischinger.buchungstool.business.TimeNumberListFunction.NUMBER_OF_SLOTS;
 import static de.bischinger.buchungstool.model.Warning.Typ.Max;
 import static de.bischinger.buchungstool.model.Warning.Typ.Min;
+import static java.util.Comparator.comparing;
+import static java.util.Comparator.comparingInt;
 import static java.util.stream.Collectors.*;
 
 /**
@@ -55,7 +57,7 @@ public class ValidationService {
             Warning lastWarning = null;
             for (Map.Entry<Integer, Integer> e : countMap.entrySet().stream()
                     .filter(k -> k.getKey() > 1)    //warnings erst ab 9 Uhr betrachten
-                    .sorted((o1, o2) -> Integer.compare(o1.getKey(), o2.getKey()))
+                    .sorted(comparingInt(Map.Entry::getKey))
                     .collect(toList())) {
                 Integer slot = e.getKey();
                 Integer count = e.getValue();
@@ -85,7 +87,7 @@ public class ValidationService {
             }
         });
 
-        warnings.sort((o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+        warnings.sort(comparing(Warning::getDate));
         return warnings;
     }
 

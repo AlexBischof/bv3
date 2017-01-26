@@ -17,13 +17,11 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import static java.time.LocalDateTime.ofInstant;
 import static java.util.Collections.singletonList;
-import static java.util.logging.Logger.*;
-import static java.util.logging.Logger.getAnonymousLogger;
+import static java.util.logging.Logger.getLogger;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.of;

@@ -4,7 +4,6 @@ import de.bischinger.buchungstool.business.HiwiRepository;
 import de.bischinger.buchungstool.model.Hiwi;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;

@@ -62,7 +62,6 @@ public class ValidationService {
 
                 if (count < minBooking || count > capacity) {
                     Warning.Typ typ = count < minBooking ? Min : Max;
-                    System.out.println(localDate + " " + count + " " + capacity + " " + typ);
                     int diff = typ.equals(Min) ? minBooking - count : count - capacity;
 
                     Warning warning = null;

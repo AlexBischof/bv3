@@ -22,7 +22,7 @@ public class CapacityReaderTest
 	{
 		CapacityReader capacityReader = new CapacityReader();
 
-		List<Capacity> result = capacityReader.read(get(CapacityReader.class.getResource("/capacity.csv").toURI()));
+		List<Capacity> result = capacityReader.readCsv(get(CapacityReader.class.getResource("/capacity.csv").toURI()));
 
 		assertThat(result.stream()
 				.filter(c -> c.getDate().equals(LocalDate.of(2016, JULY, 25)))

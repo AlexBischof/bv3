@@ -7,6 +7,7 @@ import static de.bischinger.buchungstool.model.Warning.Typ;
 import static de.bischinger.buchungstool.model.Warning.Typ.Max;
 
 public class WarningDto {
+    private long id;
     private String date;
     private LocalTime start;
     private LocalTime ende;
@@ -14,7 +15,8 @@ public class WarningDto {
     private int capacity;
     private int count;
 
-    public WarningDto(String date, int from, int to, Typ typ, int capacity, int count) {
+    public WarningDto(long id, String date, int from, int to, Typ typ, int capacity, int count) {
+        this.id = id;
         this.date = date;
         this.start = getLocalTime(from);
         this.ende = getLocalTime(to);
@@ -23,13 +25,19 @@ public class WarningDto {
         this.count = count;
     }
 
-    public String getDate()
-    {
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getDate() {
         return date;
     }
 
-    public void setDate(String date)
-    {
+    public void setDate(String date) {
         this.date = date;
     }
 

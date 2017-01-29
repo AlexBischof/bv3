@@ -23,19 +23,20 @@
                                 <th>Aktuelle/Kapazität</th>
                                 <th>Aktionen</th>
                             </tr>
-                            <ui:repeat var="o" value="#{warnings}">
-                                <tr>
-                                    <td>#{o.date}</td>
-                                    <td>#{o.start} - #{o.ende}</td>
-                                    <td>#{o.typ}</td>
-                                    <td>#{o.count}/#{o.capacity}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
-                                                data-target="#modalEdit"><i class="fa fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </ui:repeat>
+                            <h:form>
+                                <ui:repeat var="o" value="#{warningListBean.warnings}">
+                                    <tr>
+                                        <td>#{o.date}</td>
+                                        <td>#{o.start} - #{o.ende}</td>
+                                        <td>#{o.typ}</td>
+                                        <td>#{o.count}/#{o.capacity}</td>
+                                        <td>
+                                            <h:commandButton styleClass="btn btn-primary" type="submit" value="Delete"
+                                                             action="#{warningListBean.delete(o)}"/>
+                                        </td>
+                                    </tr>
+                                </ui:repeat>
+                            </h:form>
                         </table>
                     </div>
 

@@ -25,92 +25,92 @@
     <!-- NAVBAR
     ================================================== -->
     <div class="navbar-wrapper">
-        <div class="container">
-            <nav class="navbar navbar-inverse navbar-static-top">
-                <div class="container">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                                data-target="#navbar"
-                                aria-expanded="false" aria-controls="navbar">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="index.xhtml">Buchungstool</a>
-                    </div>
-
-                    <div id="navbar" class="navbar-collapse collapse">
-                        <ul class="nav navbar-nav">
-                            <li class="active"><a href="index.xhtml">Home</a></li>
-                            <li><a href="calendar.xhtml">Kalendar</a></li>
-                            <li><a href="capacities.xhtml">Kapazitäten</a></li>
-                            <li><a href="config.xhtml">Konfig</a></li>
-                            <li>
-                                <form class="navbar-form navbar-left" action="hiwi.xhtml" method="post">
-                                    <div class="form-group">
-                                        <input required="required" name="name" type="text" class="form-control"
-                                               data-provide="typeahead" minLength="2"
-                                               id="search" placeholder="Search"/>
-                                    </div>
-                                </form>
-                            </li>
-                            <li>
-                                <button type="button" class="btn btn-primary navbar-btn" data-toggle="modal"
-                                        data-target="#modalIcsCalendar">Import Kalendar
-                                </button>
-                            </li>
-                            <li>
-                                <button type="button" class="btn btn-primary navbar-btn" data-toggle="modal"
-                                                 data-target="#modalCapacities">Import Kapazitäten
-                            </button>
-                            </li>
-                        </ul>
-                    </div>
+        <nav class="navbar navbar-inverse navbar-static-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#navbar"
+                            aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.xhtml">Buchungstool</a>
                 </div>
-            </nav>
 
-            <!-- Modal Import Kapazitäten-->
-            <div class="modal fade" id="modalCapacities" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                    aria-hidden="true">x</span></button>
-                            <h4 class="modal-title" id="myModalLabel">Kapazitäten importieren</h4>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="index.xhtml">Home</a></li>
+                        <li><a href="calendar.xhtml">Kalendar</a></li>
+                        <li><a href="capacities.xhtml">Kapazitäten</a></li>
+                        <li><a href="config.xhtml">Konfig</a></li>
+                        <li>
+                            <form class="navbar-form navbar-left" action="hiwi.xhtml" method="post">
+                                <div class="form-group">
+                                    <input required="required" name="name" type="text" class="form-control"
+                                           data-provide="typeahead" minLength="2"
+                                           id="search" placeholder="Search"/>
+                                </div>
+                            </form>
+                        </li>
+                        <li>
+                            <button type="button" class="btn btn-primary navbar-btn" data-toggle="modal"
+                                    data-target="#modalIcsCalendar">Import Kalendar
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn btn-primary navbar-btn" data-toggle="modal"
+                                    data-target="#modalCapacities">Import Kapazitäten
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Modal Import Kapazitäten-->
+        <div class="modal fade" id="modalCapacities" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">x</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Kapazitäten importieren</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="panel panel-info">Der Kapazitäten-Import kann über die folgenden Varianten
+                            erfolgen:<br/>
+                            &#160; &#160;<i class="fa fa-file" aria-hidden="true"></i> CSV: mit Datum
+                            (TT.MM.JJJJ),Kapazität (z.B.) 18.07.2016,10<br/>
+                            &#160; &#160;<i class="fa fa-file-excel-o" aria-hidden="true"></i> XLSX mit Spalten: Datum |
+                            Sofie/Mirjam | Annette/Eva | SIS Summe<br/>
                         </div>
-                        <div class="modal-body">
-                            <div class="panel panel-info">Der Kapazitäten-Import kann über die folgenden Varianten
-                                erfolgen:<br/>
-                                &#160; &#160;<i class="fa fa-file" aria-hidden="true"></i> CSV: mit Datum (TT.MM.JJJJ),Kapazität (z.B.) 18.07.2016,10<br/>
-                                &#160; &#160;<i class="fa fa-file-excel-o" aria-hidden="true"></i> XLSX mit Spalten: Datum | Sofie/Mirjam | Annette/Eva |	SIS	Summe<br/>
-                            </div>
-                            <form action="/api/upload/capacity" id="icsDropzone" class="dropzone"
-                                  style="border: 1px solid #e5e5e5; height: 300px; "></form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
+                        <form action="/api/upload/capacity" id="icsDropzone" class="dropzone"
+                              style="border: 1px solid #e5e5e5; height: 300px; "></form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Modal Import Kalendar-->
-            <div class="modal fade" id="modalIcsCalendar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                    aria-hidden="true">x</span></button>
-                            <h4 class="modal-title" id="myModalLabel">ICS Kalendar importieren</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form action="/api/upload/cal" id="icsDropzone" class="dropzone"
-                                  style="border: 1px solid #e5e5e5; height: 300px; "></form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
+        <!-- Modal Import Kalendar-->
+        <div class="modal fade" id="modalIcsCalendar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">x</span></button>
+                        <h4 class="modal-title" id="myModalLabel">ICS Kalendar importieren</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/api/upload/cal" id="icsDropzone" class="dropzone"
+                              style="border: 1px solid #e5e5e5; height: 300px; "></form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -143,6 +143,7 @@
    })
 
 
+
     </script>
     <!-- dropzone -->
     <script src="resources/js/dropzone/dropzone.js"></script>
@@ -155,6 +156,7 @@
     });
   }
 };
+
 
 
 

@@ -52,7 +52,6 @@ public class Hiwi extends RootPojo
 	{
 		other.getScheduleMap().forEach((otherLocalDate, otherSchedule) ->
 		{
-
 			Schedule curSchedule = getScheduleMap().get(otherLocalDate);
 			if(curSchedule == null)
 			{

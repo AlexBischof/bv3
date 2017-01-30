@@ -34,12 +34,12 @@ public class ImportBean {
     @Inject
     private EntityManager em;
 
-    public void doImport(File file) {
+    public void doImport(File file, boolean isSommer) {
         //FIXME delete all Hiwis
         hiwiRepository.deleteAll();
         warningRepository.deleteAll();
 
-        IcsImporter icsImporter = new IcsImporter(file);
+        IcsImporter icsImporter = new IcsImporter(file, isSommer);
         ImportResult importResult = icsImporter.importFile();
         List<Hiwi> hiwis = importResult.getHiwis();
         hiwis.forEach(hiwi -> em.persist(hiwi));

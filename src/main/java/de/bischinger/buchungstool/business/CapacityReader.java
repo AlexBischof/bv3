@@ -17,6 +17,7 @@ import java.util.*;
 
 import static java.lang.Integer.valueOf;
 import static java.nio.file.Files.readAllLines;
+import static java.time.LocalDate.*;
 import static java.time.LocalDate.parse;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Collections.emptyList;
@@ -64,6 +65,7 @@ public class CapacityReader {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
+                System.out.println(row);
                 try {
                     Cell cell = row.getCell(5);
                     double capacity = evaluator.evaluate(cell).getNumberValue();
@@ -71,16 +73,15 @@ public class CapacityReader {
                         Date dateCellValue = row.getCell(1).getDateCellValue();
                         if (dateCellValue != null) {
                             System.out.println("-->" + dateCellValue);
-                            LocalDate from = LocalDate.parse(simpleDateFormat.format(dateCellValue), dateTimeFormatter);
+                            LocalDate from = parse(simpleDateFormat.format(dateCellValue), dateTimeFormatter);
                             map.put(from, (int) capacity);
                         }
                     }
                 } catch (Exception e) {
+                    e.printStackTrace();
                     //skip on purpose
                 }
             }
-
-            System.out.println(map);
 
             List<Capacity> collect = map.entrySet().stream().map(e -> new Capacity(e.getKey(), e.getValue()))
                     .collect(toList());

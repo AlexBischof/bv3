@@ -17,6 +17,7 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static java.time.LocalDateTime.ofInstant;
@@ -32,13 +33,16 @@ import static net.fortuna.ical4j.model.Property.*;
  */
 public class IcsImporter {
 
+    //TODO
     private static final List<String> skipList = of("teambesprechung*,zsb*,geburtstag*,schulung,sis ge*,feiertag*,*sissis".split(","))
             .map(s -> s.replaceAll("\\*", ".*")).collect(toList());
 
     private final File file;
+    private final boolean isSommer;
 
-    public IcsImporter(File file) {
+    public IcsImporter(File file, boolean isSommer) {
         this.file = file;
+        this.isSommer = isSommer;
     }
 
     public ImportResult importFile() throws IcsFileReadException {
@@ -113,7 +117,7 @@ public class IcsImporter {
             return hiwis.stream();
         });
 
-        NettoDurationFunction nettoDurationFunction = new NettoDurationFunction();
+        NettoDurationFunction nettoDurationFunction = new NettoDurationFunction(() -> isSommer);
 
         //Merge same Hiwis
         Stream<Hiwi> mergedHiwi = HiwiStream.collect(groupingBy(Hiwi::getName)).entrySet().stream()

@@ -25,7 +25,7 @@ public class ValidationServiceTest {
     @Before
     public void before() throws URISyntaxException {
         URL resource = this.getClass().getResource("/Kalender von SIS-Dienstplan_18.07.-14.10.16.ics");
-        icsImporter = new IcsImporter(new File(resource.toURI()));
+        icsImporter = new IcsImporter(new File(resource.toURI()), true);
 
         List<Capacity> capacityList = null;
         try {

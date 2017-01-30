@@ -1,8 +1,10 @@
 package de.bischinger.buchungstool.boundary;
 
 import de.bischinger.buchungstool.business.ImportBean;
+import de.bischinger.buchungstool.business.importer.BookingTypMapping;
 import de.bischinger.buchungstool.business.importer.IcsFileReadException;
 import de.bischinger.buchungstool.model.Capacity;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
@@ -26,8 +28,10 @@ import java.util.logging.Logger;
 import static de.bischinger.buchungstool.business.CapacityReader.readCsv;
 import static de.bischinger.buchungstool.business.CapacityReader.readXls;
 import static java.io.File.createTempFile;
+import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static javax.ws.rs.core.Response.ok;
+import static javax.ws.rs.core.Response.status;
 import static org.apache.commons.io.IOUtils.toByteArray;
 
 /**
@@ -45,24 +49,18 @@ public class UploadResource {
 
     @POST
     @Path("cal")
-    @Consumes("multipart/form-data")
-    public Response uploadCal(MultipartFormDataInput input) {
-        Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-        List<InputPart> inputParts = uploadForm.get("file");
+    @Consumes(MULTIPART_FORM_DATA)
+    public Response uploadCal(@MultipartForm CalendarUploadData calendarUploadData) {
+        try {
+            File file = createTempFile("buchungstool", ".ics");
+            writeFile(calendarUploadData.getFile(), file);
+            file.deleteOnExit();
 
-        for (InputPart inputPart : inputParts) {
-            try {
-                InputStream inputStream = inputPart.getBody(InputStream.class, null);
-                String fileName = getFileName(inputPart.getHeaders());
-                logger.info(fileName);
-                File file = createTempFile("buchungstool", ".ics");
-                writeFile(toByteArray(inputStream), file);
-                file.deleteOnExit();
+            boolean isSommer = "Sommer".equals(calendarUploadData.getPausencalculation());
 
-                importBean.doImport(file);
-            } catch (IOException | IcsFileReadException e) {
-                return Response.status(INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-            }
+            importBean.doImport(file, isSommer);
+        } catch (IOException | IcsFileReadException e) {
+            return status(INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
 
         return ok().build();
@@ -70,8 +68,8 @@ public class UploadResource {
 
     @POST
     @Path("capacity")
-    @Consumes("multipart/form-data")
-    public Response uploadCapaciy(MultipartFormDataInput input) {
+    @Consumes(MULTIPART_FORM_DATA)
+    public Response uploadCapacity(MultipartFormDataInput input) {
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get("file");
 
@@ -99,7 +97,7 @@ public class UploadResource {
                         );
             } catch (IOException | IcsFileReadException e) {
                 e.printStackTrace();
-                return Response.status(INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+                return status(INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
             }
         }
 

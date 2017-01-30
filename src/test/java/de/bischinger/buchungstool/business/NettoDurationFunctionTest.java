@@ -11,10 +11,10 @@ public class NettoDurationFunctionTest {
 
     @Test
     public void testApply() throws Exception {
-        Integer netto = new NettoDurationFunction().apply(241);
+        Integer netto = new NettoDurationFunction(() -> true).apply(241);
         assertThat(netto).isEqualTo(211);
 
-        netto = new NettoDurationFunction().apply(240);
+        netto = new NettoDurationFunction(() -> false).apply(240);
         assertThat(netto).isEqualTo(240);
     }
 }

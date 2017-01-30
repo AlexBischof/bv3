@@ -86,7 +86,7 @@
                             &#160; &#160;<i class="fa fa-file-excel-o" aria-hidden="true"></i> XLSX mit Spalten: Datum |
                             Sofie/Mirjam | Annette/Eva | SIS Summe<br/>
                         </div>
-                        <form action="/api/upload/capacity" id="icsDropzone" class="dropzone"
+                        <form action="/api/upload/capacity" id="icsDropzone needsclick" class="dropzone"
                               style="border: 1px solid #e5e5e5; height: 300px; "></form>
                     </div>
                     <div class="modal-footer">
@@ -107,7 +107,15 @@
                     </div>
                     <div class="modal-body">
                         <form action="/api/upload/cal" id="icsDropzone" class="dropzone"
-                              style="border: 1px solid #e5e5e5; height: 300px; "></form>
+                           style="border: 1px solid #e5e5e5; height: 200px; ">
+                            <div class="form-group">
+                                <label for="pausencalculation">Pausenberechnung</label>
+                                <select class="form-control" id="pausencalculation" name="pausencalculation">
+                                    <option>Sommer</option>
+                                    <option>Winter</option>
+                                </select>
+                            </div>
+                        </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -140,22 +148,16 @@
     <script src="resources/js/bootstrap3-typeahead.js"></script>
     <script>
          var subjects = [#{hiwiNames}];
-        $('#search').typeahead({source: subjects}).on('change', function(e){
+                 $('#search').typeahead({source: subjects}).on('change', function(e){
         console.log("din");
      e.target.form.submit();
    })
-
-
-
-
-
-
-
     </script>
     <!-- dropzone -->
     <script src="resources/js/dropzone/dropzone.js"></script>
     <script>
     Dropzone.options.icsDropzone = {
+    maxFilesize: 2,
   init: function() {
     this.on("complete", function(file, responseText) {
       $('#modalIcsCalendar .close').click();
@@ -163,15 +165,6 @@
     });
   }
 };
-
-
-
-
-
-
-
-
-
     </script>
 
 </h:body>

@@ -41,7 +41,7 @@ public class IcsImporterTest {
     @Before
     public void before() throws URISyntaxException {
         URL resource = this.getClass().getResource(dienstplan);
-        icsImporter = new IcsImporter(new File(resource.toURI()));
+        icsImporter = new IcsImporter(new File(resource.toURI()), true);
     }
 
     @Test

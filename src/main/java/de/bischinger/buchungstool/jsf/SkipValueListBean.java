@@ -46,6 +46,7 @@ public class SkipValueListBean implements Serializable {
 
     public void add() {
         skipValueRepository.add(newSkipValue);
+
     }
 
     public void delete(SkipValue skipValue) {
@@ -54,6 +55,7 @@ public class SkipValueListBean implements Serializable {
 
     @PostConstruct
     public void retrieveAllWarnings() {
+        newSkipValue = null;
         skipValues = skipValueRepository.findAllOrderedByDate();
     }
 }

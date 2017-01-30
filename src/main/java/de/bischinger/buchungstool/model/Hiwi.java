@@ -29,7 +29,7 @@ public class Hiwi extends RootPojo {
     @OneToMany(cascade = {PERSIST, REMOVE}, fetch = EAGER, orphanRemoval = true)
     private Map<LocalDate, Schedule> scheduleMap;
     @Transient
-    private Map<LocalDate, Integer> bookingsPerDate;
+    private Map<LocalDate, Double> bookingsPerDate;
 
     public Hiwi() {
     }
@@ -91,45 +91,45 @@ public class Hiwi extends RootPojo {
         }));
     }
 
-    public Map<LocalDate, Integer> collectBookingsByDate() {
+    public Map<LocalDate, Double> collectBookingsByDate() {
         if (bookingsPerDate == null) {
             bookingsPerDate = this.getScheduleMap().entrySet().stream()
                     //collects bookings per date and ignores ill
                     .map(e -> new NettoMinutesPerLocalDate(e.getKey(), e.getValue().getBookingList().stream().
                             filter(Booking::isNotIll).mapToInt(Booking::getNettoDuration).sum()))
                     .collect(groupingBy(NettoMinutesPerLocalDate::getLocalDate,
-                            mapping(NettoMinutesPerLocalDate::getNetto, summingInt(i -> i))));
+                            mapping(NettoMinutesPerLocalDate::getNetto, summingDouble(i -> i))));
         }
         return bookingsPerDate;
     }
 
-    public int getOverallNetto() {
-        return collectBookingsByDate().values().stream().mapToInt(e -> e).sum();
+    public double getOverallNetto() {
+        return collectBookingsByDate().values().stream().mapToDouble(e -> e).sum();
     }
 
     public String getMonthlyNetto() {
         return collectBookingsByDate().entrySet().stream()
                 .collect(
                         groupingBy(e -> e.getKey().getMonth(),
-                                mapping(Map.Entry::getValue, summingInt(i -> i))))
+                                mapping(Map.Entry::getValue, summingDouble(i -> i))))
                 .entrySet().stream().map(e -> e.getKey() + ": " + e.getValue()).
                         collect(joining(", "));
     }
 
     private static class NettoMinutesPerLocalDate {
         private final LocalDate localDate;
-        private final int netto;
+        private final double netto;
 
         NettoMinutesPerLocalDate(LocalDate localDate, int netto) {
             this.localDate = localDate;
-            this.netto = netto;
+            this.netto = ((double) netto) / 60d;
         }
 
         LocalDate getLocalDate() {
             return localDate;
         }
 
-        int getNetto() {
+        double getNetto() {
             return netto;
         }
     }

@@ -2,6 +2,7 @@ package de.bischinger.buchungstool.business;
 
 import de.bischinger.buchungstool.model.Capacity;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -14,10 +15,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.logging.Logger;
 
 import static java.lang.Integer.valueOf;
 import static java.nio.file.Files.readAllLines;
-import static java.time.LocalDate.*;
 import static java.time.LocalDate.parse;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Collections.emptyList;
@@ -59,26 +60,29 @@ public class CapacityReader {
         try {
             XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(path.toFile()));
 
-            XSSFSheet sheet = workbook.getSheetAt(0);
+            XSSFSheet sheet = workbook.getSheetAt(workbook.getNumberOfSheets() - 1);
+            Logger.getLogger("readXls").info("sheetname: " + sheet.getSheetName());
             FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
             Iterator<Row> rowIterator = sheet.rowIterator();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-                System.out.println(row);
                 try {
                     Cell cell = row.getCell(5);
-                    double capacity = evaluator.evaluate(cell).getNumberValue();
+                    CellValue evaluate = evaluator.evaluate(cell);
+                    if (evaluate == null){
+                        continue;
+                    }
+                    double capacity = evaluate.getNumberValue();
                     if (capacity > 0) {
                         Date dateCellValue = row.getCell(1).getDateCellValue();
                         if (dateCellValue != null) {
-                            System.out.println("-->" + dateCellValue);
                             LocalDate from = parse(simpleDateFormat.format(dateCellValue), dateTimeFormatter);
                             map.put(from, (int) capacity);
                         }
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                     //skip on purpose
                 }
             }

@@ -32,7 +32,7 @@ public class SkipValueListBean implements Serializable {
         return skipValues;
     }
 
-    public void onMemberListChanged(@Observes(notifyObserver = IF_EXISTS) final SkipValue skipValue) {
+    public void onSkipValuesChanged(@Observes(notifyObserver = IF_EXISTS) final SkipValue skipValue) {
         retrieveAllWarnings();
     }
 

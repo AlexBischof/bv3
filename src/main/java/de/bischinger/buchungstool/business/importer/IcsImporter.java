@@ -25,17 +25,12 @@ import static java.util.Collections.singletonList;
 import static java.util.logging.Logger.getLogger;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Stream.of;
 import static net.fortuna.ical4j.model.Property.*;
 
 /**
  * Created by bischofa on 28/06/16.
  */
 public class IcsImporter {
-
-    //TODO
-    private static final List<String> skipList = of("teambesprechung*,zsb*,geburtstag*,schulung,sis ge*,feiertag*,*sissis".split(","))
-            .map(s -> s.replaceAll("\\*", ".*")).collect(toList());
 
     private final File file;
     private final boolean isSommer;
@@ -45,7 +40,7 @@ public class IcsImporter {
         this.isSommer = isSommer;
     }
 
-    public ImportResult importFile() throws IcsFileReadException {
+    public ImportResult importFile(Supplier<List<String>> skipListSupplier) throws IcsFileReadException {
 
         Function<File, ComponentList> importFunction = this::importIcsFile;
 
@@ -73,7 +68,7 @@ public class IcsImporter {
                                 .and(hasProperty(SUMMARY))
                                 .and(hasProperty(RECURRENCE_ID).negate())
                                 .and(c -> !getName(c).trim().isEmpty())
-                                .and(c -> skipList.stream()
+                                .and(c -> skipListSupplier.get().stream()
                                         .noneMatch(name -> getName(c).trim().toLowerCase().matches(name)))));
 
         NameToHiwiMapper nameToHiwiMapper = new NameToHiwiMapper();

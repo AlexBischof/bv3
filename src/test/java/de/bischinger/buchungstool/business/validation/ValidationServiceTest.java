@@ -1,6 +1,7 @@
 package de.bischinger.buchungstool.business.validation;
 
 import de.bischinger.buchungstool.business.CapacityReader;
+import de.bischinger.buchungstool.business.TestSkipValues;
 import de.bischinger.buchungstool.business.importer.IcsImporter;
 import de.bischinger.buchungstool.model.Capacity;
 import org.junit.Before;
@@ -39,6 +40,6 @@ public class ValidationServiceTest {
 
     @Test
     public void test() {
-        assertThat(validationService.validate(icsImporter.importFile().getHiwis().parallelStream())).isNotEmpty();
+        assertThat(validationService.validate(icsImporter.importFile(TestSkipValues::testSkipValues).getHiwis().parallelStream())).isNotEmpty();
     }
 }

@@ -1,5 +1,6 @@
 package de.bischinger.buchungstool.business.importer;
 
+import de.bischinger.buchungstool.business.TestSkipValues;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +47,7 @@ public class IcsImporterTest {
 
     @Test
     public void testImportFile() throws Exception {
-        ImportResult importResult = icsImporter.importFile();
+        ImportResult importResult = icsImporter.importFile(TestSkipValues::testSkipValues);
         assertThat(importResult).hasNoErrors()
                 .matches(ir -> ir.getHiwis().size() == expectedHiwis, "Expecting " + expectedHiwis);
     }

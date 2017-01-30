@@ -30,6 +30,8 @@ public class ImportBean {
     @Inject
     private HiwiRepository hiwiRepository;
     @Inject
+    private SkipValueRepository skipValueRepository;
+    @Inject
     private WarningRepository warningRepository;
     @Inject
     private EntityManager em;
@@ -40,7 +42,7 @@ public class ImportBean {
         warningRepository.deleteAll();
 
         IcsImporter icsImporter = new IcsImporter(file, isSommer);
-        ImportResult importResult = icsImporter.importFile();
+        ImportResult importResult = icsImporter.importFile(skipValueRepository.findAllSkipValues());
         List<Hiwi> hiwis = importResult.getHiwis();
         hiwis.forEach(hiwi -> em.persist(hiwi));
         updateHiwisEvent.fire(new Hiwi());

@@ -1,29 +1,33 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
                 template="/templates/main.xhtml">
     <ui:define name="content">
         <div class="container">
-            <h2>Konfiguration</h2>
-            <h:form>
-                Abrechnungsvariante:
-                <h:selectOneRadio value="#{configDetailBean.config.type}">
-                    <f:selectItem itemValue="SUMMER" itemLabel="Sommer"/>
-                    <f:selectItem itemValue="WINTER" itemLabel="Winter"/>
-                </h:selectOneRadio>
-                <h:commandButton styleClass="btn btn-primary" value="Speichern" type="submit"
-                                 action="#{configDetailBean.submit}"/>
-            </h:form>
-            <hr/>
             <h2>Ignorierte Buchungskenner</h2>
-            <table class="table table-striped table-condensed">
-                <ui:repeat var="o" value="#{configDetailBean.config.skipValues}">
+            <h:form>
+                <h:inputText value="#{skipValueListBean.newSkipValue}" pt:placeholder="fill me"/>
+                <h:commandButton styleClass="btn btn-primary" value="Hinzufügen" type="submit"
+                                 action="#{skipValueListBean.add}"/>
+            </h:form>
+            <h:form>
+                <table class="table table-striped table-condensed">
                     <tr>
-                        <td>#{o}</td>
+                        <th>Name</th>
+                        <th>Aktionen</th>
                     </tr>
-                </ui:repeat>
-            </table>
+                    <ui:repeat var="o" value="#{skipValueListBean.skipValues}">
+                        <tr>
+                            <td>#{o.skipValue}</td>
+                            <td>
+                                <h:commandButton styleClass="btn btn-primary" type="submit" value="Delete"
+                                                 action="#{skipValueListBean.delete(o)}"/>
+                            </td>
+                        </tr>
+                    </ui:repeat>
+                </table>
+            </h:form>
         </div>
     </ui:define>
 </ui:composition>

@@ -70,6 +70,9 @@ public class UploadResource {
     @Path("capacity")
     @Consumes(MULTIPART_FORM_DATA)
     public Response uploadCapacity(MultipartFormDataInput input) {
+
+        em.createQuery("delete from Capacity").executeUpdate();
+
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get("file");
 

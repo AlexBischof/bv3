@@ -70,14 +70,17 @@ public class CapacityReader {
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
                 try {
-                    Cell cell = row.getCell(5);
+                    Cell cell = row.getCell(4);
+                    if (cell == null){
+                        continue;
+                    }
                     CellValue evaluate = evaluator.evaluate(cell);
                     if (evaluate == null){
                         continue;
                     }
                     double capacity = evaluate.getNumberValue();
                     if (capacity > 0) {
-                        Date dateCellValue = row.getCell(1).getDateCellValue();
+                        Date dateCellValue = row.getCell(0).getDateCellValue();
                         if (dateCellValue != null) {
                             LocalDate from = parse(simpleDateFormat.format(dateCellValue), dateTimeFormatter);
                             map.put(from, (int) capacity);

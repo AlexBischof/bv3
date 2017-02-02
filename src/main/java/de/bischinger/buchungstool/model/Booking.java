@@ -1,7 +1,6 @@
 package de.bischinger.buchungstool.model;
 
 import de.bischinger.buchungstool.business.NettoDurationFunction;
-import de.bischinger.buchungstool.business.TimeNumberListFunction;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -10,6 +9,8 @@ import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import static de.bischinger.buchungstool.business.TimeNumberListFunction.getLocalTime;
+import static de.bischinger.buchungstool.business.TimeNumberListFunction.getNumber;
 import static de.bischinger.buchungstool.model.BookingTyp.Ill;
 import static java.util.Arrays.asList;
 import static javax.persistence.FetchType.EAGER;
@@ -37,8 +38,8 @@ public class Booking extends RootPojo
 
 	public Booking(LocalTime from, LocalTime to, BookingTyp[] typ)
 	{
-		this.from = TimeNumberListFunction.getNumber(from);
-		this.to = TimeNumberListFunction.getNumber(to);
+		this.from = getNumber(from);
+		this.to = getNumber(to);
 		if(isNotEmpty(typ))
 		{
 			bookingTyp.addAll(asList(typ));
@@ -64,6 +65,14 @@ public class Booking extends RootPojo
 	public int getFrom()
 	{
 		return from;
+	}
+
+	public LocalTime getFromAsLocalTime(){
+		return getLocalTime(from);
+	}
+
+	public LocalTime getToAsLocalTime(){
+		return getLocalTime(to);
 	}
 
 	public int getTo()

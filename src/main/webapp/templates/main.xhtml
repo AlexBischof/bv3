@@ -77,6 +77,7 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                 aria-hidden="true">x</span></button>
                         <h4 class="modal-title" id="myModalLabel">Kapazitäten importieren</h4>
+                        <div id="capacityalert" class="alert hide" role="alert"/>
                     </div>
                     <div class="modal-body">
                         <div class="panel panel-info">Der Kapazitäten-Import kann über die folgenden Varianten
@@ -86,7 +87,7 @@
                             &#160; &#160;<i class="fa fa-file-excel-o" aria-hidden="true"></i> XLSX mit Spalten: Datum |
                             Sofie/Mirjam | Annette/Eva | SIS Summe<br/>
                         </div>
-                        <form action="/api/upload/capacity" id="icsDropzone needsclick" class="dropzone"
+                        <form action="/api/upload/capacity" id="calDropzone" class="dropzone"
                               style="border: 1px solid #e5e5e5; height: 300px; "></form>
                     </div>
                     <div class="modal-footer">
@@ -157,15 +158,34 @@
     <script src="resources/js/dropzone/dropzone.js"></script>
     <script>
     Dropzone.options.icsDropzone = {
+    acceptedFiles: ".ics",
     maxFilesize: 2,
   init: function() {
     this.on("complete", function(file, responseText) {
       $('#modalIcsCalendar .close').click();
       location.reload();
-    });
-  }
-};
+          });
+        }
+    };
+    Dropzone.options.calDropzone = {
+    acceptedFiles: ".csv, .xlsx, .xls",
+    maxFilesize: 2,
+  init: function() {
+     this.on("success", function(file, responseText) {
+        $('#capacityalert').removeClass("hide");
+        $('#capacityalert').text("Import erfolgreich");
+        $('#capacityalert').addClass("alert-success"); });
+     this.on("error", function(file, responseText) {
+        $('#capacityalert').removeClass("hide");
+        $('#capacityalert').text("Import fehlgeschlagen");
+        $('#capacityalert').addClass("alert-danger"); });
+       }
+    };
     </script>
 
+    <!-- reload location on modal close -->
+    <script>
+        $('#modalCapacities').on('hidden.bs.modal', function () {        location.reload();    })
+    </script>
 </h:body>
 </html>

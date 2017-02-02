@@ -38,10 +38,12 @@ public class CapacityReader {
 
         Map<LocalDate, Integer> map = new HashMap<>();
         try {
-            readAllLines(path).stream().map(s -> s.split(",")).forEach(s ->
+            readAllLines(path).stream()
+                    .filter(s -> !s.trim().isEmpty())
+                    .map(s -> s.split(",")).forEach(s ->
             {
-                LocalDate date = parse(s[0], dateTimeFormatter);
-                Integer value = valueOf(s[1]);
+                LocalDate date = parse(s[0].trim(), dateTimeFormatter);
+                Integer value = valueOf(s[1].trim());
                 map.put(date, value);
             });
             return map.entrySet().stream().map(e -> new Capacity(e.getKey(), e.getValue()))

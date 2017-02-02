@@ -2,6 +2,7 @@ package de.bischinger.buchungstool.boundary;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import de.bischinger.buchungstool.model.Warning.Typ;
 
 import java.util.Date;
 
@@ -12,11 +13,29 @@ public class Event {
     private final long start;
     private final long end;
     private final CharSequence title;
+    private String color;
+    private boolean allDay;
 
     public Event(long start, long end, CharSequence title) {
         this.start = start;
         this.end = end;
         this.title = title;
+    }
+
+    @JsonProperty
+    public Boolean getAllDay() {
+        return allDay;
+    }
+
+    public Event withWarningtyp(Typ warningtyp) {
+        this.allDay = true;
+        this.color = Typ.Min.equals(warningtyp) ? "orange" : "gold";
+        return this;
+    }
+
+    @JsonProperty
+    public String getColor() {
+        return color;
     }
 
     @JsonProperty

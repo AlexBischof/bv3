@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.time.LocalDate;
 
+import static de.bischinger.buchungstool.business.TimeNumberListFunction.getLocalTime;
+
 /**
  * Created by bischofa on 28/06/16.
  */
@@ -130,16 +132,9 @@ public class Warning extends RootPojo
 		return result;
 	}
 
-	@Override public String toString()
-	{
-		return "Warning{" +
-				"date=" + date +
-				", from=" + from +
-				", to=" + to +
-				", typ=" + typ +
-				", capacity=" + capacity +
-				", count=" + count +
-				", diff=" + diff +
-				'}';
+	@Override
+	public String toString() {
+		return date + ": " + (typ.equals(Typ.Max) ? "Überbuchung" : "Unterbelegt") + " (" + capacity + ") "
+				+ getLocalTime(from) + " - " + getLocalTime(to + 1);
 	}
 }

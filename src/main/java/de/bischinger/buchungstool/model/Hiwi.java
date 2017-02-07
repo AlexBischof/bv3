@@ -8,9 +8,12 @@ import javax.persistence.Transient;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.time.format.TextStyle.FULL;
+import static java.util.Locale.GERMAN;
 import static java.util.stream.Collectors.*;
 import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.CascadeType.REMOVE;
@@ -112,7 +115,9 @@ public class Hiwi extends RootPojo {
                 .collect(
                         groupingBy(e -> e.getKey().getMonth(),
                                 mapping(Map.Entry::getValue, summingDouble(i -> i))))
-                .entrySet().stream().map(e -> e.getKey() + ": " + e.getValue()).
+                .entrySet().stream()
+                .sorted(Comparator.comparing(Map.Entry::getKey))
+                .map(e -> e.getKey().getDisplayName(FULL, GERMAN) + ": " + e.getValue()).
                         collect(joining(", "));
     }
 

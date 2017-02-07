@@ -38,10 +38,12 @@ public class CapacityReader {
 
         Map<LocalDate, Integer> map = new HashMap<>();
         try {
-            readAllLines(path).stream().map(s -> s.split(",")).forEach(s ->
+            readAllLines(path).stream()
+                    .filter(s -> !s.trim().isEmpty())
+                    .map(s -> s.split(",")).forEach(s ->
             {
-                LocalDate date = parse(s[0], dateTimeFormatter);
-                Integer value = valueOf(s[1]);
+                LocalDate date = parse(s[0].trim(), dateTimeFormatter);
+                Integer value = valueOf(s[1].trim());
                 map.put(date, value);
             });
             return map.entrySet().stream().map(e -> new Capacity(e.getKey(), e.getValue()))
@@ -68,14 +70,17 @@ public class CapacityReader {
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
                 try {
-                    Cell cell = row.getCell(5);
+                    Cell cell = row.getCell(4);
+                    if (cell == null){
+                        continue;
+                    }
                     CellValue evaluate = evaluator.evaluate(cell);
                     if (evaluate == null){
                         continue;
                     }
                     double capacity = evaluate.getNumberValue();
                     if (capacity > 0) {
-                        Date dateCellValue = row.getCell(1).getDateCellValue();
+                        Date dateCellValue = row.getCell(0).getDateCellValue();
                         if (dateCellValue != null) {
                             LocalDate from = parse(simpleDateFormat.format(dateCellValue), dateTimeFormatter);
                             map.put(from, (int) capacity);

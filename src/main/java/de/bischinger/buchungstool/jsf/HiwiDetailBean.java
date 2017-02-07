@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
+import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
@@ -54,6 +55,9 @@ public class HiwiDetailBean
 
 	public List<BookingDto> getBookings()
 	{
+		if (hiwi == null){
+			return emptyList();
+		}
 		DateTimeFormatter dateTimeFormatter = ofPattern("dd.MM.yyyy");
 		return hiwi.getScheduleMap().entrySet().stream()
 				.sorted(comparing(Entry::getKey))

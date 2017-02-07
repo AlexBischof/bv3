@@ -1,12 +1,58 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core"
                 template="/templates/main.xhtml">
     <ui:define name="content">
         <div class="container">
             <h2>Calendar</h2>
         </div>
+        <div id='calendar'></div>
+        <script src="/resources/js/jquery.min.js"></script>
+        <script src="/resources/js/moment.min.js"></script>
+        <script src="/resources/js/fullcalendar.min.js"></script>
+
+        <script>
+            $(document).ready(function() {
+
+		$('#calendar').fullCalendar({
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,agendaWeek,agendaDay'
+			},
+			defaultDate: new Date(),
+			editable: false,
+			allDaySlot: true,
+			allDayText: '',
+			eventTextColor: 'black',
+			minTime: "08:00:00",
+			maxTime: "17:00:00",
+			weekends: false,
+			axisFormat: 'HH:mm',
+			slotLabelFormat: 'HH:mm',
+            timezone: "Europe/Berlin",
+			timeFormat: 'HH:mm',
+			eventLimit: true, // allow "more" link when too many events
+			events: {
+				url: '/api/events',
+				dataType: 'json',
+				type: "get",
+				cache: false,
+                async:false,
+				contentType: 'application/json',
+				error: function() {
+					$('#script-warning').show();
+				}
+			},
+			dayClick: function(date, jsEvent, view) {
+              $('#calendar').fullCalendar('gotoDate', date);
+              $('#calendar').fullCalendar('changeView', 'agendaDay');
+            },
+			loading: function(bool) {
+				$('#loading').toggle(bool);
+			}
+		});
+	});
+</script>
     </ui:define>
 </ui:composition>
 

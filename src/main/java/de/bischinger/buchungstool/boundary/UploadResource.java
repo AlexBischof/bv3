@@ -1,7 +1,6 @@
 package de.bischinger.buchungstool.boundary;
 
 import de.bischinger.buchungstool.business.ImportBean;
-import de.bischinger.buchungstool.business.importer.BookingTypMapping;
 import de.bischinger.buchungstool.business.importer.IcsFileReadException;
 import de.bischinger.buchungstool.model.Capacity;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;

@@ -1,13 +1,16 @@
 package de.bischinger.buchungstool.boundary;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.bischinger.buchungstool.model.Warning.Typ;
 
 import java.util.Date;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
+@JsonInclude(NON_NULL)
 public class Event {
 
     private final long start;

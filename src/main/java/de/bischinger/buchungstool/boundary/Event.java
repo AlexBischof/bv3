@@ -18,6 +18,7 @@ public class Event {
     private final CharSequence title;
     private String color;
     private boolean allDay;
+    private String url;
 
     public Event(long start, long end, CharSequence title) {
         this.start = start;
@@ -35,6 +36,11 @@ public class Event {
         this.color = Typ.Min.equals(warningtyp) ? "orange" : "gold";
         return this;
     }
+
+    public String getUrl() {
+        return allDay ? null : "/hiwi.xhtml?name="+title;
+    }
+
 
     @JsonProperty
     public String getColor() {

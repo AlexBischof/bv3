@@ -49,7 +49,7 @@ public class ImportBean {
         logger.info("" + importResult);
 
         ValidationService validationService = new ValidationService(
-                em.createQuery("from Capacity", Capacity.class).getResultList(), 9, 5);
+                em.createQuery("from Capacity", Capacity.class).getResultList(), 9, isSommer ? 5 : 4);
         //config().getInteger("buchungstool.defaultBelegung", 9),
         //FIXME config().getInteger("buchungstool.minBelegung", 5)
         validationService.validate(hiwis.stream()).forEach(warning -> em.persist(warning));

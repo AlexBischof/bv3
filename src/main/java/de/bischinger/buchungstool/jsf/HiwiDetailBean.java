@@ -9,7 +9,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.inject.Inject;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -19,8 +18,8 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.time.format.TextStyle.FULL;
 import static java.util.Comparator.comparing;
 import static java.util.Locale.GERMAN;
-import static java.util.stream.Collectors.*;
-import static java.util.stream.IntStream.rangeClosed;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.summingInt;
 
 /**
  * Created by Alex Bischof on 25.01.2017.
@@ -85,7 +84,7 @@ public class HiwiDetailBean {
         if (hiwi == null) {
             return "";
         }
-        return hiwi.getWeeklyNetto().keySet().stream().sorted().map(week -> "\"Week: " + week + "\"")
+        return hiwi.getWeeklyNetto().keySet().stream().sorted().map(week -> "\"Woche: " + week + "\"")
                 .collect(joining(","));
     }
 
@@ -117,20 +116,6 @@ public class HiwiDetailBean {
         return hiwi.getMonthlyNetto().entrySet().stream()
                 .sorted(comparing(Entry::getKey))
                 .map(Map.Entry::getValue)
-                .map(v -> "\"" + v + "\"")
-                .collect(joining(","));
-    }
-
-    public String getBookingValuesPartialSums() {
-        if (hiwi == null) {
-            return "";
-        }
-        List<Double> dayBookingSums = hiwi.getScheduleMap().entrySet().stream()
-                .sorted(comparing(Entry::getKey))
-                .map(e -> e.getValue().getBookingList().stream().map(Booking::getNettoDuration).collect(summingInt(i -> i)))
-                .map(h -> h / 60d).collect(toList());
-        return rangeClosed(1, dayBookingSums.size())
-                .mapToObj(i -> dayBookingSums.subList(0, i).stream().collect(summingDouble(value -> value)))
                 .map(v -> "\"" + v + "\"")
                 .collect(joining(","));
     }

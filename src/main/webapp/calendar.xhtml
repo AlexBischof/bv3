@@ -3,12 +3,14 @@
                 template="/templates/main.xhtml">
     <ui:define name="content">
         <div class="container">
-            <h2>Calendar</h2>
+            <h2>Kalendar</h2>
         </div>
         <div id="calendar"></div>
         <script src="/resources/js/jquery.min.js"></script>
         <script src="/resources/js/moment.min.js"></script>
-        <script src="/resources/js/fullcalendar.min.js"></script>
+        <script src="/resources/js/fullcalendar/fullcalendar.min.js"></script>
+        <script src="/resources/js/fullcalendar/locale/de.js"></script>
+
 
         <script>
             $(document).ready(function() {
@@ -30,7 +32,7 @@
 			weekends: false,
 			axisFormat: 'HH:mm',
 			slotLabelFormat: 'HH:mm',
-            timezone: "Europe/Berlin",
+            timezone: 'Europe/Berlin',
 			timeFormat: 'HH:mm',
 			eventLimit: true, // allow "more" link when too many events
 			events: {

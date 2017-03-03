@@ -3,36 +3,131 @@
                 template="/templates/main.xhtml">
     <ui:define name="content">
         <h2>Hiwi: #{hiwiDetailBean.name}</h2>
+        <p><a href=""><i class="fa fa-file-excel-o" aria-hidden="true"/>Export</a></p>
 
-        <div class="panel with-nav-tabs panel-default">
-            <div class="panel-heading">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab1default" data-toggle="tab">Einzelbuchungen</a></li>
-                </ul>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Monatsübersicht (Netto)</h3>
+                    </div>
+                    <div class="panel-body">
+                        <canvas id="mybarChartMonthly"/>
+                    </div>
+                </div>
             </div>
-            <div class="panel-body">
-                <div class="tab-content">
-                    <div class="tab-pane fade in active" id="tab1default">
-                        <table class="table table-striped table-condensed">
-                            <tr>
-                                <th>Datum</th>
-                                <th>Zeitraum</th>
-                                <th>Netto in Min</th>
-                                <th>Brutto in Min</th>
-                            </tr>
-                            <ui:repeat var="o" value="#{hiwiDetailBean.bookings}">
-                                <tr>
-                                    <td>#{o.date}</td>
-                                    <td>#{o.start} - #{o.ende}</td>
-                                    <td>#{o.nettoDuration}</td>
-                                    <td>#{o.bruttoDuration}</td>
-                                </tr>
-                            </ui:repeat>
-                        </table>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Wochenübersicht (Netto)</h3>
+                    </div>
+                    <div class="panel-body">
+                        <canvas id="mybarChartWeekly"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Einzelübersicht</h3>
+                    </div>
+                    <div class="panel-body">
+                        <canvas id="mybarChart"/>
                     </div>
                 </div>
             </div>
         </div>
+    </ui:define>
+
+    <ui:define name="morejs">
+        <!-- Chart.js -->
+        <script src="/resources/js/chart.min.js"></script>
+        <script>
+            if ($('#mybarChartMonthly').length ){
+
+			  var ctx = document.getElementById("mybarChartMonthly");
+			  var mybarChart = new Chart(ctx, {
+				type: 'bar',
+				data: {
+				  labels: [#{hiwiDetailBean.bookingValuesNettoMonthly}],
+				  datasets: [
+                      {
+                        type: 'bar',
+                        label: 'Anzahl Stunden (Netto)',
+                        backgroundColor: "rgba(75, 192, 192, 0.2)",
+                        data: [#{hiwiDetailBean.bookingValuesNettoMonthlyValues}]
+                      }
+				  ]
+				},
+				options: {
+                    scales: {
+                        xAxes: [{
+                            stacked: true
+                        }],
+                        yAxes: [{
+                            stacked: true
+                        }]
+                    }
+                }
+			  });
+			}
+
+            if ($('#mybarChartWeekly').length ){
+
+			  var ctx = document.getElementById("mybarChartWeekly");
+			  var mybarChart = new Chart(ctx, {
+				type: 'bar',
+				data: {
+				  labels: [#{hiwiDetailBean.bookingValuesNettoWeeks}],
+				  datasets: [
+                      {
+                        type: 'bar',
+                        label: 'Anzahl Stunden (Netto)',
+                        backgroundColor: "rgba(75, 192, 192, 0.2)",
+                        data: [#{hiwiDetailBean.bookingValuesNettoWeekValues}]
+                      }
+				  ]
+				},
+				options: {
+                    scales: {
+                        xAxes: [{
+                            stacked: true
+                        }],
+                        yAxes: [{
+                            stacked: true
+                        }]
+                    }
+                }
+			  });
+			}
+
+			if ($('#mybarChart').length ){
+
+			  var ctx = document.getElementById("mybarChart");
+			  var mybarChart = new Chart(ctx, {
+				type: 'bar',
+				data: {
+				  labels: [#{hiwiDetailBean.bookingDates}],
+				  datasets: [
+                      {
+                        type: 'bar',
+                        label: 'Anzahl Stunden (Netto)',
+                        backgroundColor: "rgba(75, 192, 192, 0.2)",
+                        data: [#{hiwiDetailBean.bookingValuesNetto}]
+                      },
+                      {
+                        type: 'bar',
+                        label: 'Anzahl Stunden (Brutto)',
+                        backgroundColor: "rgba(54, 162, 235, 0.2)",
+                        data: [#{hiwiDetailBean.bookingValuesBrutto}]
+                      }
+				  ]
+				}
+			  });
+			}
+
+
+        </script>
     </ui:define>
 </ui:composition>
 

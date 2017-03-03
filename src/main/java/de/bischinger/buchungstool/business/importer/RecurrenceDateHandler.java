@@ -65,34 +65,35 @@ class RecurrenceDateHandler {
         PropertyList exdateProperty = component.getProperties(EXDATE);
         final DateList exdates = exdateProperty == null || exdateProperty.isEmpty() ? null : ((ExDate) exdateProperty.get(0)).getDates();
 
-        return dates.stream().map(icsDate -> {
+        return dates.stream().filter(e -> exdates == null || !exdates.contains(e))
+                .map(icsDate -> {
 
-            java.util.Date date = (java.util.Date) icsDate;
-            LocalDateTime fromDate = convertTo(date);
+                    java.util.Date date = (java.util.Date) icsDate;
+                    LocalDateTime fromDate = convertTo(date);
 
-            LocalDateTime tmpEnd = getEnd(component);
-            LocalDateTime originalEnd = fromDate.minusHours(0).with(HOUR_OF_DAY, tmpEnd.getHour()).with(MINUTE_OF_HOUR, tmpEnd.getMinute());
-            LocalDateTime calculatedEnd = originalEnd;
-            List<IcsImporter.LocalDateTimePeriod> tuples = recurrenceIdMap.get(recurrenceIdKey(component));
+                    LocalDateTime tmpEnd = getEnd(component);
+                    LocalDateTime originalEnd = fromDate.minusHours(0).with(HOUR_OF_DAY, tmpEnd.getHour()).with(MINUTE_OF_HOUR, tmpEnd.getMinute());
+                    LocalDateTime calculatedEnd = originalEnd;
+                    List<IcsImporter.LocalDateTimePeriod> tuples = recurrenceIdMap.get(recurrenceIdKey(component));
 
-            if (tuples != null) {
-                Optional<LocalDateTime> first = tuples.stream().map(LocalDateTimePeriod::getEndTime)
-                        .filter(localDateTime -> localDateTime.toLocalDate().equals(originalEnd.toLocalDate()))
-                        .findFirst();
-                if (first.isPresent()) {
-                    calculatedEnd = first.get();
-                }
-            }
+                    if (tuples != null) {
+                        Optional<LocalDateTime> first = tuples.stream().map(LocalDateTimePeriod::getEndTime)
+                                .filter(localDateTime -> localDateTime.toLocalDate().equals(originalEnd.toLocalDate()))
+                                .findFirst();
+                        if (first.isPresent()) {
+                            calculatedEnd = first.get();
+                        }
+                    }
 
-            hiwi.addTimes(fromDate, calculatedEnd, bookingTypMapping.apply(hiwi.getName()));
-            java.util.Date end = Date.from(calculatedEnd.atZone(ZoneId.of("Europe/Berlin")).toInstant());
+                    hiwi.addTimes(fromDate, calculatedEnd, bookingTypMapping.apply(hiwi.getName()));
+                    java.util.Date end = Date.from(calculatedEnd.atZone(ZoneId.of("Europe/Berlin")).toInstant());
 
-            //Wenn in exdate definiert, anpassung startdate
-            Object startDate = ofNullable(exdates).map(e -> e.stream()
-                    .filter(exdate -> Dates.getInstance((java.util.Date) exdate, DATE_TIME).equals(date))
-                    .findFirst().orElse(date)).orElse(date);
+                    //Wenn in exdate definiert, anpassung startdate
+                    Object startDate = ofNullable(exdates).map(e -> e.stream()
+                            .filter(exdate -> Dates.getInstance((java.util.Date) exdate, DATE_TIME).equals(date))
+                            .findFirst().orElse(date)).orElse(date);
 
-            return new Event((java.util.Date) startDate, end, hiwi.getName());
-        });
+                    return new Event((java.util.Date) startDate, end, hiwi.getName());
+                });
     }
 }

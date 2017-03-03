@@ -13,7 +13,7 @@ import static java.time.temporal.ChronoUnit.MINUTES;
  */
 public class TimeNumberListFunction implements Function<LocalTime, Integer> {
     private static Map<Object, Integer> timeNumberMap;
-    public final static int NUMBER_OF_SLOTS = 31;
+    public final static int NUMBER_OF_SLOTS = 51;
 
     static {
         timeNumberMap = new HashMap<>(NUMBER_OF_SLOTS);

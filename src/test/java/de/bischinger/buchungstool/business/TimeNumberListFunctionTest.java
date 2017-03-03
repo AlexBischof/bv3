@@ -16,7 +16,7 @@ public class TimeNumberListFunctionTest {
 
     @Test
     public void testGet() throws Exception {
-        assertThat(suT.getCount()).isEqualTo(31);
+        assertThat(suT.getCount()).isEqualTo(51);
     }
 
     @Test
@@ -24,9 +24,11 @@ public class TimeNumberListFunctionTest {
         LocalTime eight = of(8, 30);
         LocalTime nine = of(9, 00);
         LocalTime sixteen = of(16, 00);
+        LocalTime twenty = of(20, 00);
 
         assertThat(suT.apply(eight)).isEqualTo(0);
         assertThat(suT.apply(nine)).isEqualTo(2);
         assertThat(suT.apply(sixteen)).isEqualTo(30);
+        assertThat(suT.apply(twenty)).isEqualTo(46);
     }
 }

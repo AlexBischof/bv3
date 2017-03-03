@@ -8,12 +8,17 @@ import javax.persistence.Transient;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static java.time.format.TextStyle.FULL;
 import static java.util.Locale.GERMAN;
+import static java.util.Map.Entry;
 import static java.util.stream.Collectors.*;
 import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.CascadeType.REMOVE;
@@ -110,15 +115,26 @@ public class Hiwi extends RootPojo {
         return collectBookingsByDate().values().stream().mapToDouble(e -> e).sum();
     }
 
-    public String getMonthlyNetto() {
+    public Map<Month, Double> getMonthlyNetto() {
         return collectBookingsByDate().entrySet().stream()
                 .collect(
                         groupingBy(e -> e.getKey().getMonth(),
-                                mapping(Map.Entry::getValue, summingDouble(i -> i))))
-                .entrySet().stream()
-                .sorted(Comparator.comparing(Map.Entry::getKey))
+                                mapping(Entry::getValue, summingDouble(i -> i))));
+    }
+
+    public String getMonthlyNettoAsString() {
+        return getMonthlyNetto().entrySet().stream()
+                .sorted(Comparator.comparing(Entry::getKey))
                 .map(e -> e.getKey().getDisplayName(FULL, GERMAN) + ": " + e.getValue()).
                         collect(joining(", "));
+    }
+
+    public Map<Integer, Double> getWeeklyNetto() {
+        TemporalField weekOfYear = WeekFields.of(Locale.getDefault()).weekOfYear();
+        return collectBookingsByDate().entrySet().stream()
+                .collect(
+                        groupingBy(e -> e.getKey().get(weekOfYear),
+                                mapping(Entry::getValue, summingDouble(i -> i))));
     }
 
     private static class NettoMinutesPerLocalDate {

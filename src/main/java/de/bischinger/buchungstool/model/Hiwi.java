@@ -1,6 +1,7 @@
 package de.bischinger.buchungstool.model;
 
 import de.bischinger.buchungstool.business.NettoDurationFunction;
+import de.bischinger.buchungstool.jsf.BookingDto;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -9,14 +10,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
+import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.time.format.TextStyle.FULL;
+import static java.util.Comparator.comparing;
 import static java.util.Locale.GERMAN;
 import static java.util.Map.Entry;
 import static java.util.stream.Collectors.*;
@@ -124,7 +125,7 @@ public class Hiwi extends RootPojo {
 
     public String getMonthlyNettoAsString() {
         return getMonthlyNetto().entrySet().stream()
-                .sorted(Comparator.comparing(Entry::getKey))
+                .sorted(comparing(Entry::getKey))
                 .map(e -> e.getKey().getDisplayName(FULL, GERMAN) + ": " + e.getValue()).
                         collect(joining(", "));
     }
@@ -153,5 +154,17 @@ public class Hiwi extends RootPojo {
         double getNetto() {
             return netto;
         }
+    }
+
+    public List<BookingDto> getBookings()
+    {
+        DateTimeFormatter dateTimeFormatter = ofPattern("dd.MM.yyyy");
+        return this.getScheduleMap().entrySet().stream()
+            .sorted(comparing(Map.Entry::getKey))
+            .flatMap(e -> e.getValue().getBookingList().stream().map(b ->
+                new BookingDto(dateTimeFormatter.format(e.getKey()), b.getFrom(), b.getTo(), b.getNettoDuration(),
+                    b.getBruttoDuration())
+            ))
+            .collect(toList());
     }
 }

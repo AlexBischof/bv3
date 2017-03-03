@@ -18,6 +18,11 @@ public class HiwiRepository
 		return em.find(Hiwi.class, id);
 	}
 
+	public Hiwi findByName(String name)
+	{
+		return em.createQuery("from Hiwi where name=:name", Hiwi.class).setParameter("name", name).getSingleResult();
+	}
+
 	public List<Hiwi> findAllOrderedByName()
 	{
 		return em.createQuery("from Hiwi order by name", Hiwi.class).getResultList();

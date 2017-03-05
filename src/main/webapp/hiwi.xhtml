@@ -122,7 +122,17 @@
                         data: [#{hiwiDetailBean.bookingValuesBrutto}]
                       }
 				  ]
-				}
+				},
+				options: {
+                    scales: {
+                        xAxes: [{
+                            stacked: true
+                        }],
+                        yAxes: [{
+                            stacked: true
+                        }]
+                    }
+                }
 			  });
 			}
 

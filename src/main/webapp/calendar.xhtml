@@ -28,7 +28,7 @@
 			eventTextColor: 'black',
 			eventColor: '#99CCFF',
 			minTime: "08:00:00",
-			maxTime: "17:00:00",
+			maxTime: "19:30:00",
 			displayEventEnd: true,
 			weekends: false,
 			axisFormat: 'HH:mm',
@@ -36,6 +36,15 @@
             timezone: 'Europe/Berlin',
 			timeFormat: 'HH:mm',
 			eventLimit: true, // allow "more" link when too many events
+			eventRender: function(event, element, view) {
+                if (event.allDay == true) {
+                    element.find(".fc-content").prepend("&lt;span class='closeon'>X&lt;/span>");
+                }
+                element.find(".closeon").on('click', function() {
+                    $.ajax({url: "api/events/" + event.tid,type: 'DELETE'});
+                    $('#calendar').fullCalendar('removeEvents', event._id);
+                });
+            },
 			events: {
 				url: '/api/events',
 				dataType: 'json',
@@ -56,7 +65,7 @@
 			}
 		});
 	});
-</script>
+        </script>
     </ui:define>
 </ui:composition>
 

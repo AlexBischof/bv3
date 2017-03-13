@@ -19,8 +19,10 @@ public class Event {
     private String color;
     private boolean allDay;
     private String url;
+    private long tid;
 
-    public Event(long start, long end, CharSequence title) {
+    public Event(long tid, long start, long end, CharSequence title) {
+        this.tid = tid;
         this.start = start;
         this.end = end;
         this.title = title;
@@ -62,6 +64,11 @@ public class Event {
     @JsonProperty
     public CharSequence getTitle() {
         return title;
+    }
+
+    @JsonProperty
+    public long getTid() {
+        return tid;
     }
 
     @Override

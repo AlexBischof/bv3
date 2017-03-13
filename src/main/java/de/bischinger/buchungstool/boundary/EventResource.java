@@ -6,9 +6,7 @@ import de.bischinger.buchungstool.model.Warning;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.time.LocalDate;
 import java.util.List;
@@ -33,18 +31,24 @@ public class EventResource {
     @Inject
     private EntityManager em;
 
+    @DELETE
+    @Path("/{id}")
+    public void deleteWarning(@PathParam("id") long id){
+        Warning warning = em.find(Warning.class, id);
+        em.remove(warning);
+    }
+
     @GET
     public Response getEvents() {
 
-        //TODO performance
         List<Event> events = findEvents();
 
         List<Warning> warnings = em.createQuery("from Warning", Warning.class).getResultList();
         events.addAll(warnings.stream().map(w -> {
             LocalDate date = w.getDate();
-            return new Event(date.atTime(getLocalTime(w.getFrom())).toInstant(UTC).toEpochMilli()
+            return new Event(w.getId(), date.atTime(getLocalTime(w.getFrom())).toInstant(UTC).toEpochMilli()
                     , date.atTime(getLocalTime(w.getTo())).toInstant(UTC).toEpochMilli()
-                    , w.toString().substring(11) + " [" + w.getCount()+"]")
+                    , w.toString().substring(11) + " [" + w.getCount() + "]")
                     .withWarningtyp(w.getTyp());
         }).collect(toList()));
 
@@ -63,7 +67,7 @@ public class EventResource {
                                 LocalDate date = s.getKey();
 
                                 return s.getValue().getBookingList().stream()
-                                        .map(b -> new Event(
+                                        .map(b -> new Event(b.getId(),
                                                 date.atTime(b.getFromAsLocalTime()).toInstant(UTC).toEpochMilli()
                                                 , date.atTime(b.getToAsLocalTime()).toInstant(UTC).toEpochMilli()
                                                 , hiwiName));

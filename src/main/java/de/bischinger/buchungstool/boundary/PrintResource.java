@@ -2,6 +2,7 @@ package de.bischinger.buchungstool.boundary;
 
 import de.bischinger.buchungstool.business.HiwiRepository;
 import de.bischinger.buchungstool.jsf.BookingDto;
+import de.bischinger.buchungstool.model.Hiwi;
 import org.apache.poi.xssf.usermodel.*;
 
 import javax.inject.Inject;
@@ -32,6 +33,46 @@ public class PrintResource
 
 	@Inject
 	private Logger logger;
+
+	@Path("/hiwis")
+	@GET
+	@Produces("application/xlsx")
+	public Response printHiwis() throws UnsupportedEncodingException
+	{
+		List<Hiwi> hiwis = hiwiRepository.findAllOrderedByName();
+
+		AtomicInteger rowCounter = new AtomicInteger(0);
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet sheet = workbook.createSheet("Gesamtübersicht Hiwis");
+		XSSFRow headerRow = sheet.createRow(rowCounter.getAndIncrement());
+
+		int colNum = 0;
+		//Set header
+		for (String headerColumnName : asList("Name", "Gesamt in Stunden", "Stunden pro Monat"))
+		{
+			XSSFCell cell = headerRow.createCell(colNum++, CELL_TYPE_STRING);
+			cell.setCellValue(new XSSFRichTextString(headerColumnName));
+		}
+
+		//data
+		hiwis.forEach(hiwi ->
+		{
+			//create row
+			XSSFRow row = sheet.createRow(rowCounter.getAndIncrement());
+
+			//create data
+			row.createCell(0, CELL_TYPE_STRING).setCellValue(new XSSFRichTextString(hiwi.getName()));
+			row.createCell(1, CELL_TYPE_STRING).setCellValue(hiwi.getOverallNetto());
+			row.createCell(2, CELL_TYPE_STRING).setCellValue(new XSSFRichTextString(hiwi.getMonthlyNettoAsString()));
+		});
+
+		autoSizeColumns(workbook, "Gesamtübersicht Hiwis");
+
+		StreamingOutput streamingOutput = workbook::write;
+
+		return ok(streamingOutput).header("Content-Disposition", "attachment; filename=\"Gesamtuebersicht\".xlsx")
+				.build();
+	}
 
 	@Path("{hiwi}")
 	@GET

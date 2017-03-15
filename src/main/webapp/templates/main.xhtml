@@ -12,7 +12,7 @@
     <meta name="author" content=""/>
     <link rel="icon" href="favicon.ico"/>
 
-    <link rel="stylesheet" href="resources/css/calendar/fullcalendar.css" />
+    <link rel="stylesheet" href="resources/css/calendar/fullcalendar.css"/>
 
     <!-- Bootstrap core CSS -->
     <link href="resources/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
@@ -67,6 +67,16 @@
                                     data-target="#modalCapacities">Import Kapazitäten
                             </button>
                         </li>
+                        <li>
+                            <button type="button" class="btn btn-info navbar-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Exporte <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="/api/print/hiwis">Hiwis</a></li>
+                                <li><a href="/api/print/warnings">Warnungen</a></li>
+                                <li><a href="/api/print/capacities">Kapazitäten</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -111,7 +121,7 @@
                     </div>
                     <div class="modal-body">
                         <form action="/api/upload/cal" id="icsDropzone" class="dropzone"
-                           style="border: 1px solid #e5e5e5; height: 200px; ">
+                              style="border: 1px solid #e5e5e5; height: 200px; ">
                             <div class="form-group">
                                 <label for="pausencalculation">Pausenberechnung</label>
                                 <select class="form-control" id="pausencalculation" name="pausencalculation">
@@ -156,6 +166,7 @@
         console.log("din");
      e.target.form.submit();
    })
+
     </script>
     <!-- dropzone -->
     <script src="resources/js/dropzone/dropzone.js"></script>
@@ -184,11 +195,13 @@
         $('#capacityalert').addClass("alert-danger"); });
        }
     };
+
     </script>
 
     <!-- reload location on modal close -->
     <script>
         $('#modalCapacities').on('hidden.bs.modal', function () {        location.reload();    })
+
     </script>
 
     <ui:insert name="morejs"/>

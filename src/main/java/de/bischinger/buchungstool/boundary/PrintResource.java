@@ -2,6 +2,10 @@ package de.bischinger.buchungstool.boundary;
 
 import de.bischinger.buchungstool.business.HiwiRepository;
 import de.bischinger.buchungstool.jsf.BookingDto;
+import de.bischinger.buchungstool.jsf.CapacityListBean;
+import de.bischinger.buchungstool.jsf.WarningDto;
+import de.bischinger.buchungstool.jsf.WarningListBean;
+import de.bischinger.buchungstool.model.Capacity;
 import de.bischinger.buchungstool.model.Hiwi;
 import org.apache.poi.xssf.usermodel.*;
 
@@ -35,7 +39,89 @@ public class PrintResource {
     private HiwiRepository hiwiRepository;
 
     @Inject
+    private WarningListBean warningListBean;
+
+    @Inject
+    private CapacityListBean capacityListBean;
+
+    @Inject
     private Logger logger;
+
+    @Path("/capacities")
+    @GET
+    @Produces("application/xlsx")
+    public Response printCapacities() throws UnsupportedEncodingException {
+        List<Capacity> capacities = capacityListBean.getCapacities();
+
+        AtomicInteger rowCounter = new AtomicInteger(0);
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Capacities");
+        XSSFRow headerRow = sheet.createRow(rowCounter.getAndIncrement());
+
+        int colNum = 0;
+        //Set header
+        for (String headerColumnName : asList("Datum", "Anzahl")) {
+            XSSFCell cell = headerRow.createCell(colNum++, CELL_TYPE_STRING);
+            cell.setCellValue(new XSSFRichTextString(headerColumnName));
+        }
+
+        //data
+        capacities.forEach(capacity ->
+        {
+            //create row
+            XSSFRow row = sheet.createRow(rowCounter.getAndIncrement());
+
+            //create data
+            row.createCell(0, CELL_TYPE_STRING).setCellValue(new XSSFRichTextString(capacity.getFormattedDate()));
+            row.createCell(1, CELL_TYPE_STRING).setCellValue(capacity.getNumber());
+        });
+
+        autoSizeColumns(workbook, "Capacities");
+
+        StreamingOutput streamingOutput = workbook::write;
+
+        return ok(streamingOutput).header("Content-Disposition", "attachment; filename=Capacities.xlsx")
+                .build();
+    }
+
+    @Path("/warnings")
+    @GET
+    @Produces("application/xlsx")
+    public Response printWarnings() throws UnsupportedEncodingException {
+        List<WarningDto> warnings = warningListBean.getWarnings();
+
+        AtomicInteger rowCounter = new AtomicInteger(0);
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Warnings");
+        XSSFRow headerRow = sheet.createRow(rowCounter.getAndIncrement());
+
+        int colNum = 0;
+        //Set header
+        for (String headerColumnName : asList("Von", "Bis", "Typ", "Aktuelle Kapazität")) {
+            XSSFCell cell = headerRow.createCell(colNum++, CELL_TYPE_STRING);
+            cell.setCellValue(new XSSFRichTextString(headerColumnName));
+        }
+
+        //data
+        warnings.forEach(warning ->
+        {
+            //create row
+            XSSFRow row = sheet.createRow(rowCounter.getAndIncrement());
+
+            //create data
+            row.createCell(0, CELL_TYPE_STRING).setCellValue(new XSSFRichTextString(warning.getDate()));
+            row.createCell(1, CELL_TYPE_STRING).setCellValue(warning.getStart() + " - " + warning.getEnde());
+            row.createCell(2, CELL_TYPE_STRING).setCellValue(warning.getTyp());
+            row.createCell(3, CELL_TYPE_STRING).setCellValue(warning.getCount() + " / " + warning.getCapacity());
+        });
+
+        autoSizeColumns(workbook, "Warnings");
+
+        StreamingOutput streamingOutput = workbook::write;
+
+        return ok(streamingOutput).header("Content-Disposition", "attachment; filename=warnings.xlsx")
+                .build();
+    }
 
     @Path("/hiwis")
     @GET
@@ -89,7 +175,7 @@ public class PrintResource {
 
         StreamingOutput streamingOutput = workbook::write;
 
-        return ok(streamingOutput).header("Content-Disposition", "attachment; filename=\"Gesamtuebersicht\".xlsx")
+        return ok(streamingOutput).header("Content-Disposition", "attachment; filename=Gesamtuebersicht.xlsx")
                 .build();
     }
 

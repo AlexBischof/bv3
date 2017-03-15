@@ -75,9 +75,7 @@ public class HiwiDetailBean {
         if (hiwi == null) {
             return "";
         }
-        Function<Booking, Integer> getBruttoDuration = Booking::getBruttoDuration;
-
-        return calculateValuesInternal(getBruttoDuration);
+        return calculateValuesInternal(Booking::getBruttoDuration);
     }
 
     public String getBookingValuesNettoWeeks() {

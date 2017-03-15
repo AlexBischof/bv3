@@ -54,7 +54,7 @@
                       {
                         type: 'bar',
                         label: 'Anzahl Stunden (Netto)',
-                        backgroundColor: "rgba(75, 192, 192, 0.2)",
+                        backgroundColor: "rgba(26, 7, 196, 0.6)",
                         data: [#{hiwiDetailBean.bookingValuesNettoMonthlyValues}]
                       }
 				  ]
@@ -83,7 +83,7 @@
                       {
                         type: 'bar',
                         label: 'Anzahl Stunden (Netto)',
-                        backgroundColor: "rgba(75, 192, 192, 0.2)",
+                        backgroundColor: "rgba(26, 7, 196, 0.6)",
                         data: [#{hiwiDetailBean.bookingValuesNettoWeekValues}]
                       }
 				  ]
@@ -112,31 +112,28 @@
                       {
                         type: 'bar',
                         label: 'Anzahl Stunden (Netto)',
-                        backgroundColor: "rgba(75, 192, 192, 0.2)",
+                        backgroundColor: "rgba(26, 7, 196, 0.6)",
                         data: [#{hiwiDetailBean.bookingValuesNetto}]
                       },
                       {
                         type: 'bar',
                         label: 'Anzahl Stunden (Brutto)',
-                        backgroundColor: "rgba(54, 162, 235, 0.2)",
+                        backgroundColor: "rgba(0,255,0, 0.6)",
                         data: [#{hiwiDetailBean.bookingValuesBrutto}]
                       }
 				  ]
 				},
 				options: {
                     scales: {
-                        xAxes: [{
-                            stacked: true
-                        }],
-                        yAxes: [{
-                            stacked: true
+                         yAxes: [{
+                            ticks: {
+                                beginAtZero:true
+                            }
                         }]
                     }
                 }
 			  });
 			}
-
-
         </script>
     </ui:define>
 </ui:composition>

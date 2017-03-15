@@ -8,14 +8,22 @@ import javax.enterprise.context.RequestScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.inject.Inject;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static java.lang.String.format;
+import static java.time.DayOfWeek.FRIDAY;
+import static java.time.DayOfWeek.MONDAY;
+import static java.time.LocalDate.now;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.time.format.TextStyle.FULL;
+import static java.time.temporal.TemporalAdjusters.nextOrSame;
+import static java.time.temporal.TemporalAdjusters.previousOrSame;
+import static java.time.temporal.WeekFields.ISO;
 import static java.util.Comparator.comparing;
 import static java.util.Locale.GERMAN;
 import static java.util.stream.Collectors.joining;
@@ -82,7 +90,14 @@ public class HiwiDetailBean {
         if (hiwi == null) {
             return "";
         }
-        return hiwi.getWeeklyNetto().keySet().stream().sorted().map(week -> "\"Woche: " + week + "\"")
+
+        DateTimeFormatter dateTimeFormatter = ofPattern("dd.MM");
+        return hiwi.getWeeklyNetto().keySet().stream().sorted()
+                .map(week -> {
+                    LocalDate dateOfWeek = now().with(ISO.weekOfWeekBasedYear(), week);
+                    return format("\"%s-%s\"", dateOfWeek.with(previousOrSame(MONDAY)).format(dateTimeFormatter),
+                            dateOfWeek.with(nextOrSame(FRIDAY)).format(dateTimeFormatter));
+                })
                 .collect(joining(","));
     }
 

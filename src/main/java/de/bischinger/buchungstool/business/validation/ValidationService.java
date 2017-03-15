@@ -6,6 +6,7 @@ import de.bischinger.buchungstool.model.Capacity;
 import de.bischinger.buchungstool.model.Hiwi;
 import de.bischinger.buchungstool.model.Warning;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Stream;
@@ -57,10 +58,12 @@ public class ValidationService {
                     .flatMapToInt(BitSet::stream)
                     .forEach(bit -> countMap.merge(bit, 1, (oldValue, newValue) -> oldValue == null ? newValue : oldValue + newValue)));
 
+            int kernzeitEnde = localDate.getDayOfWeek().equals(DayOfWeek.FRIDAY) ? 12: 16;
+
             Warning lastWarning = null;
             for (Map.Entry<Integer, Integer> e : countMap.entrySet().stream()
                     .filter(k -> k.getKey() >= getNumber(of(9,0)))    //warnings erst ab 9 Uhr betrachten
-                    .filter(k -> k.getKey() < getNumber(of(16,0)))    //warnings nur auf Kernzeit 16 Uhr betrachten
+                    .filter(k -> k.getKey() < getNumber(of(kernzeitEnde,0)))    //warnings nur auf Kernzeiten (d.h. Mo-Do:16 Uhr, Fr: 12) betrachten
                     .sorted(comparingInt(Map.Entry::getKey))
                     .collect(toList())) {
                 Integer slot = e.getKey();

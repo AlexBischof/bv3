@@ -1,5 +1,6 @@
 package de.bischinger.buchungstool.business.validation;
 
+import de.bischinger.buchungstool.business.TimeNumberListFunction;
 import de.bischinger.buchungstool.model.Booking;
 import de.bischinger.buchungstool.model.Capacity;
 import de.bischinger.buchungstool.model.Hiwi;
@@ -10,8 +11,10 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static de.bischinger.buchungstool.business.TimeNumberListFunction.NUMBER_OF_SLOTS;
+import static de.bischinger.buchungstool.business.TimeNumberListFunction.getNumber;
 import static de.bischinger.buchungstool.model.Warning.Typ.Max;
 import static de.bischinger.buchungstool.model.Warning.Typ.Min;
+import static java.time.LocalTime.of;
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingInt;
 import static java.util.stream.Collectors.*;
@@ -56,7 +59,8 @@ public class ValidationService {
 
             Warning lastWarning = null;
             for (Map.Entry<Integer, Integer> e : countMap.entrySet().stream()
-                    .filter(k -> k.getKey() > 1)    //warnings erst ab 9 Uhr betrachten
+                    .filter(k -> k.getKey() >= getNumber(of(9,0)))    //warnings erst ab 9 Uhr betrachten
+                    .filter(k -> k.getKey() < getNumber(of(16,0)))    //warnings nur auf Kernzeit 16 Uhr betrachten
                     .sorted(comparingInt(Map.Entry::getKey))
                     .collect(toList())) {
                 Integer slot = e.getKey();

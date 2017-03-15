@@ -2,6 +2,7 @@ package de.bischinger.buchungstool.boundary;
 
 import de.bischinger.buchungstool.business.ImportBean;
 import de.bischinger.buchungstool.business.importer.IcsFileReadException;
+import de.bischinger.buchungstool.model.CalendarImport;
 import de.bischinger.buchungstool.model.Capacity;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -51,11 +52,17 @@ public class UploadResource {
     @Consumes(MULTIPART_FORM_DATA)
     public Response uploadCal(@MultipartForm CalendarUploadData calendarUploadData) {
         try {
-            File file = createTempFile("buchungstool", ".ics");
-            writeFile(calendarUploadData.getFile(), file);
-            file.deleteOnExit();
-
             boolean isSommer = "Sommer".equals(calendarUploadData.getPausencalculation());
+
+            File file = createTempFile("buchungstool", ".ics");
+            byte[] filedata = calendarUploadData.getFile();
+
+            //Save database
+            em.persist(new CalendarImport(file.getName(), filedata, isSommer));
+
+            //save to tmpfile
+            writeFile(filedata, file);
+            file.deleteOnExit();
 
             importBean.doImport(file, isSommer);
         } catch (IOException | IcsFileReadException e) {
@@ -97,6 +104,19 @@ public class UploadResource {
                                     }
                                 }
                         );
+
+                //reimport last calendar to generate warnings
+                List<CalendarImport> calendarImports = em.createQuery("from CalendarImport order by id desc", CalendarImport.class)
+                        .setMaxResults(1).getResultList();
+                if (!calendarImports.isEmpty()){
+                    CalendarImport calendarImport = calendarImports.get(0);
+
+                    File reimportFile = createTempFile("buchungstool", ".ics");
+                    writeFile(calendarImport.getFiledata(), reimportFile);
+                    reimportFile.deleteOnExit();
+
+                    importBean.doImport(reimportFile, calendarImport.isSommer());
+                }
             } catch (IOException | IcsFileReadException e) {
                 e.printStackTrace();
                 return status(INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();

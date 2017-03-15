@@ -23,5 +23,11 @@ public class StartupBean {
     public void init() {
         of("teambesprechung*,zsb*,geburtstag*,schulung,sis ge*,feiertag*,*sissis".split(","))
                 .map(s -> s.replaceAll("\\*", ".*")).forEach(s -> em.persist(new SkipValue(s)));
+
+        //housekeeping: keep last 5 imports
+        em.createQuery("from CalendarImport order by createdOn desc").getResultList()
+                .stream()
+                .skip(5)
+                .forEach(file -> em.remove(file));
     }
 }

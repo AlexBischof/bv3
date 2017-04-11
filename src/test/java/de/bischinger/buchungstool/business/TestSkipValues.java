@@ -10,7 +10,7 @@ import static java.util.stream.Stream.of;
  */
 public class TestSkipValues {
     public static List<String> testSkipValues() {
-        return of("teambesprechung*,zsb*,geburtstag*,schulung,sis ge*,feiertag*,*sissis".split(","))
+        return of("teambesprechung*,zsb*,geburtstag*,schulung,sis ge*,feiertag*,.*sissis,.*B2Run".split(","))
                 .map(s -> s.replaceAll("\\*", ".*")).collect(toList());
 
     }

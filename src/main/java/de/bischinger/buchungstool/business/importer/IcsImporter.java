@@ -157,7 +157,7 @@ public class IcsImporter {
         return convertTo(getEndAsDate(component));
     }
 
-    private LocalDateTime getStart(Component component) {
+    static LocalDateTime getStart(Component component) {
         return convertTo(getStartAsDate(component));
     }
 

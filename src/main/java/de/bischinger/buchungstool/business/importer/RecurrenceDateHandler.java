@@ -10,14 +10,15 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static de.bischinger.buchungstool.business.DateConverter.convertTo;
 import static de.bischinger.buchungstool.business.importer.IcsImporter.*;
 import static java.time.temporal.ChronoField.HOUR_OF_DAY;
 import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
+import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.Arrays.asList;
+import static java.util.Date.from;
 import static java.util.Optional.ofNullable;
 import static net.fortuna.ical4j.model.Property.EXDATE;
 import static net.fortuna.ical4j.model.Property.RRULE;
@@ -69,31 +70,39 @@ class RecurrenceDateHandler {
                 .map(icsDate -> {
 
                     java.util.Date date = (java.util.Date) icsDate;
-                    LocalDateTime fromDate = convertTo(date);
+                    LocalDateTime currentSerienEventDate = convertTo(date);
 
+                    //Schaut nach Treffer in RecurrenceIdMap
+                    LocalDateTime dateDayTruncated = currentSerienEventDate.truncatedTo(DAYS);
                     LocalDateTime tmpEnd = getEnd(component);
-                    LocalDateTime originalEnd = fromDate.minusHours(0).with(HOUR_OF_DAY, tmpEnd.getHour()).with(MINUTE_OF_HOUR, tmpEnd.getMinute());
-                    LocalDateTime calculatedEnd = originalEnd;
-                    List<IcsImporter.LocalDateTimePeriod> tuples = recurrenceIdMap.get(recurrenceIdKey(component));
-
-                    if (tuples != null) {
-                        Optional<LocalDateTime> first = tuples.stream().map(LocalDateTimePeriod::getEndTime)
-                                .filter(localDateTime -> localDateTime.toLocalDate().equals(originalEnd.toLocalDate()))
-                                .findFirst();
-                        if (first.isPresent()) {
-                            calculatedEnd = first.get();
-                        }
-                    }
-
-                    hiwi.addTimes(fromDate, calculatedEnd, bookingTypMapping.apply(hiwi.getName()));
-                    java.util.Date end = Date.from(calculatedEnd.atZone(ZoneId.of("Europe/Berlin")).toInstant());
+                    LocalDateTimePeriod localDateTimePeriod = ofNullable(recurrenceIdMap.get(recurrenceIdKey(component)))
+                            .flatMap(periodList -> periodList
+                                    .stream()
+                                    .filter(period -> period.getEndTime().truncatedTo(DAYS).isEqual(dateDayTruncated))
+                                    .findFirst())
+                            .orElse(
+                                    new LocalDateTimePeriod(currentSerienEventDate, currentSerienEventDate
+                                            //Setzt die Endzeit von dem originalen Serienevent
+                                            .with(HOUR_OF_DAY, tmpEnd.getHour())
+                                            .with(MINUTE_OF_HOUR, tmpEnd.getMinute())));
 
                     //Wenn in exdate definiert, anpassung startdate
-                    Object startDate = ofNullable(exdates).map(e -> e.stream()
-                            .filter(exdate -> Dates.getInstance((java.util.Date) exdate, DATE_TIME).equals(date))
-                            .findFirst().orElse(date)).orElse(date);
+                    LocalDateTime startDate = (LocalDateTime) ofNullable(exdates)
+                            .flatMap(e -> e.stream()
+                                    .filter(exdate -> Dates.getInstance((java.util.Date) exdate, DATE_TIME).equals(date))
+                                    .map(curDate -> convertTo(date))
+                                    .findFirst())
+                            .orElse(localDateTimePeriod.getStartTime());
 
-                    return new Event((java.util.Date) startDate, end, hiwi.getName());
+
+                    hiwi.addTimes(startDate, localDateTimePeriod.getEndTime(), bookingTypMapping.apply(hiwi.getName()));
+
+                    //Konvertierung nach Zeitzone für Kalenderdarstellung
+                    ZoneId berlinZone = ZoneId.of("Europe/Berlin");
+                    java.util.Date end = from(localDateTimePeriod.getEndTime().atZone(berlinZone).toInstant());
+                    java.util.Date start = from(localDateTimePeriod.getStartTime().atZone(berlinZone).toInstant());
+
+                    return new Event(start, end, hiwi.getName());
                 });
     }
 }

@@ -1,5 +1,6 @@
 package de.bischinger.buchungstool.boundary;
 
+import de.bischinger.buchungstool.business.CapacityRepository;
 import de.bischinger.buchungstool.business.ImportBean;
 import de.bischinger.buchungstool.business.importer.IcsFileReadException;
 import de.bischinger.buchungstool.model.CalendarImport;
@@ -46,6 +47,8 @@ public class UploadResource {
     private ImportBean importBean;
     @Inject
     private EntityManager em;
+    @Inject
+    private CapacityRepository capacityRepository;
 
     @POST
     @Path("cal")
@@ -92,23 +95,13 @@ public class UploadResource {
                 file.deleteOnExit();
 
                 BiFunction<String, java.nio.file.Path, List<Capacity>> capacitiesFunction = (f, p) -> f.endsWith("csv") ? readCsv(p) : readXls(p);
-                capacitiesFunction.apply(fileName, file.toPath())
-                        .forEach(capacity ->
-                                {
-                                    //Update if already exists
-                                    Capacity dbCapacity = em.find(Capacity.class, capacity.getDate());
-                                    if (dbCapacity == null) {
-                                        em.persist(capacity);
-                                    } else {
-                                        dbCapacity.setNumber(capacity.getNumber());
-                                    }
-                                }
-                        );
+                capacitiesFunction.apply(fileName, file.toPath()).forEach(capacityRepository::add);
+
 
                 //reimport last calendar to generate warnings
                 List<CalendarImport> calendarImports = em.createQuery("from CalendarImport order by id desc", CalendarImport.class)
                         .setMaxResults(1).getResultList();
-                if (!calendarImports.isEmpty()){
+                if (!calendarImports.isEmpty()) {
                     CalendarImport calendarImport = calendarImports.get(0);
 
                     File reimportFile = createTempFile("buchungstool", ".ics");

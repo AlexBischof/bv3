@@ -35,7 +35,7 @@
 			slotLabelFormat: 'HH:mm',
             timezone: 'Europe/Berlin',
 			timeFormat: 'HH:mm',
-			eventLimit: true, // allow "more" link when too many events
+			eventLimit: false, // allow "more" link when too many events
 			eventRender: function(event, element, view) {
                 if (event.allDay == true) {
                     element.find(".fc-content").prepend("&lt;span class='closeon'>X&lt;/span>");

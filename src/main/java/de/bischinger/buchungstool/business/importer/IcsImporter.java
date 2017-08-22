@@ -69,7 +69,7 @@ public class IcsImporter {
                                 .and(hasProperty(RECURRENCE_ID).negate())
                                 .and(c -> !getName(c).trim().isEmpty())
                                 .and(c -> skipListSupplier.get().stream()
-                                        .noneMatch(name -> getName(c).trim().toLowerCase().matches(name)))));
+                                        .noneMatch(name -> getName(c).trim().toLowerCase().matches(name.toLowerCase())))));
 
         NameToHiwiMapper nameToHiwiMapper = new NameToHiwiMapper();
         BookingTypMapping bookingTypMapping = new BookingTypMapping();

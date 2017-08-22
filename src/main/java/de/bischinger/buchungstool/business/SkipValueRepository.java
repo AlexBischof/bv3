@@ -35,7 +35,6 @@ public class SkipValueRepository {
     }
 
     public void add(String skipValueString) {
-        logger.info(skipValueString + " added.");
         if (isNotEmpty(skipValueString)) {
             SkipValue newSkipValue = new SkipValue(skipValueString);
             em.persist(newSkipValue);

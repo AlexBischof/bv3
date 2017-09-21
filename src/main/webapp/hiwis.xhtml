@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="/templates/main.xhtml">
+    <ui:define name="content">
+        <div class="container">
+            <h2>Hiwis</h2>
+            <table class="table table-striped table-condensed">
+                <tr>
+                    <th>Name</th>
+                    <th>Gesamt in Stunden</th>
+                    <th>Stunden pro Monat</th>
+                    <!-- TODO ImportResult -->
+                </tr>
+                <ui:repeat var="o" value="#{hiwis}">
+                    <tr>
+                        <td>
+                            <h:link outcome="hiwi">
+                                <f:param name="name" value="#{o.name}"/>
+                                #{o.name}
+                            </h:link>
+                        </td>
+                        <td>#{o.overallNetto}</td>
+                        <td>#{o.monthlyNettoAsString}</td>
+                    </tr>
+                </ui:repeat>
+            </table>
+        </div>
+    </ui:define>
+</ui:composition>
+

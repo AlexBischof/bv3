@@ -44,9 +44,9 @@ public class SkipValueListBean implements Serializable {
         this.newSkipValue = newSkipValue;
     }
 
-    public void add() {
+    public String add() {
         skipValueRepository.add(newSkipValue);
-
+        return "config?faces-redirect=true";
     }
 
     public void delete(SkipValue skipValue) {
